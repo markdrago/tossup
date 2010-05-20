@@ -1,9 +1,14 @@
 from django.db import models
 
 class Achievement(models.Model):
+    KIND_CHOICES = (
+        ('STUNT', 'Stunt'),
+        ('PATTERN', 'Pattern')
+    )
+
     name = models.CharField(max_length=255)
     points = models.IntegerField()
-    kind = models.CharField(max_length=255)
+    kind = models.CharField(max_length=255, choices=KIND_CHOICES)
     date_created = models.DateTimeField('date created')
     
     def __unicode__(self):
