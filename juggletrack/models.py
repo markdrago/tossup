@@ -21,6 +21,12 @@ class Juggler(models.Model):
     
     def __unicode__(self):
         return self.name
+    
+    def score(self):
+        score = 0
+        for ach in self.achievement.all():
+            score += ach.points
+        return score
 
 class JugglerAchievement(models.Model):
     juggler = models.ForeignKey(Juggler)
