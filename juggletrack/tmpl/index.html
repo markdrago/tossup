@@ -1,0 +1,20 @@
+{% extends "parent.html" %}
+
+{% block title %} - All Jugglers{% endblock %}
+
+{% block content %}
+<h3>Jugglers</h3>
+<table>
+<tr>
+<th>Name</th>
+<th>Points</th>
+</tr>
+{% for juggler in jugglers %}
+<tr>
+<td><a href="juggler.html?id={{juggler.id}}">{{ juggler.name }}</a></td>
+<td>{{ juggler.score }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
+

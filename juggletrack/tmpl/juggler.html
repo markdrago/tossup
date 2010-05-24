@@ -1,0 +1,20 @@
+{% extends "parent.html" %}
+
+{% block title %} - {{juggler.name}}{% endblock %}
+
+{% block content %}
+<h3>Juggler - {{juggler.name}}</h3>
+<table>
+<tr>
+<th>Achievement</th>
+<th>Points</th>
+</tr>
+{% for ach in achievements %}
+<tr>
+<td>{{ ach.name }}</a></td>
+<td>{{ ach.points }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
+
