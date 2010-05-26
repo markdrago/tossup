@@ -31,7 +31,7 @@ class Juggler(models.Model):
 class JugglerAchievement(models.Model):
     juggler = models.ForeignKey(Juggler)
     achievement = models.ForeignKey(Achievement)
-    date_created = models.DateTimeField('date achieved')
+    date_created = models.DateTimeField('date achieved', auto_now_add=True)
     
     def __unicode__(self):
         return self.juggler.name + ": " + self.achievement.name

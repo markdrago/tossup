@@ -3,18 +3,37 @@
 {% block title %} - {{juggler.name}}{% endblock %}
 
 {% block content %}
-<h3>Juggler - {{juggler.name}}</h3>
+<h2>{{juggler.name}} - {{juggler.score}} points</h3>
+<h3>Achievements</h3>
 <table>
-<tr>
-<th>Achievement</th>
-<th>Points</th>
-</tr>
-{% for ach in achievements %}
-<tr>
-<td>{{ ach.name }}</a></td>
-<td>{{ ach.points }}</td>
-</tr>
-{% endfor %}
+    <tr>
+        <th>Achievement</th>
+        <th>Points</th>
+    </tr>
+    {% for ach in achievements %}
+    <tr>
+        <td>{{ ach.name }}</a></td>
+        <td>{{ ach.points }}</td>
+    </tr>
+    {% endfor %}
 </table>
+<h3>Achievements Not Yet Achieved</h3>
+<form action="add" method="post">
+    <table>
+        <tr>
+            <th>Add?</th>
+            <th>Achievement</th>
+            <th>Points</th>
+        </tr>
+        {% for unach in unachieved %}
+        <tr>
+            <td><input type="checkbox" name="achieved" value="{{ unach.id }}" /></td>
+            <td>{{ unach.name }}</a></td>
+            <td>{{ unach.points }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <input type="submit" value="Submit" />
+</form>
 {% endblock %}
 
