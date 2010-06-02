@@ -8,6 +8,12 @@ def index(request):
     jugglers.sort(cmp=lambda x,y: cmp(y.score,x.score))
     return render_to_response('index.html', {'jugglers': jugglers})
 
+def achievement(request, achievement_id):
+    ach = get_object_or_404(Achievement, pk=achievement_id)
+    jugglers = JugglerAchievement.objects.filter(achievement=ach).order_by('date_created')
+    return render_to_response('achievement.html', {'achievement': ach,
+                                                   'jugglers': jugglers})
+
 def juggler(request, juggler_id):
     juggler = get_object_or_404(Juggler, pk=juggler_id)
     achievements = JugglerAchievement.objects.filter(juggler=juggler).order_by('achievement__points')

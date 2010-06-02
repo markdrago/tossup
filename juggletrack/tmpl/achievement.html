@@ -1,0 +1,25 @@
+{% extends "parent.html" %}
+
+{% block title %} - {{achievement.name}}{% endblock %}
+
+{% block content %}
+<h2>{{achievement.name}} - {{achievement.get_kind_display|title}} - {{achievement.points}} points</h3>
+<h3>Jugglers</h3>
+{% if jugglers %}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Date Achieved</th>
+    </tr>
+    {% for j in jugglers %}
+    <tr>
+        <td><a href="../../juggler/{{j.juggler.id}}">{{j.juggler.name}}</a></td>
+        <td>{{j.date_created|date:"M d, Y @ H:i"}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Nobody has achieved this yet.</p>
+{% endif %}
+{% endblock %}
+
