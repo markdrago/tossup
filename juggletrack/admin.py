@@ -5,7 +5,7 @@ class JugglerAdmin(admin.ModelAdmin):
     list_display = ('name', 'score')
 
 class AchievementAdmin(admin.ModelAdmin):
-    list_display = ('name', 'points')
+    list_display = ('name', 'kind', 'points')
 
 class JugglerAchievementAdmin(admin.ModelAdmin):
     list_display = ('juggler', 'achievement', 'date_created')

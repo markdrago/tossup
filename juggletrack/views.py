@@ -5,7 +5,6 @@ from models import Juggler, Achievement, JugglerAchievement
 
 def index(request):
     jugglers = list(Juggler.objects.all().order_by('name'))
-    jugglers.sort(cmp=lambda x,y: cmp(y.score,x.score))
     return render_to_response('index.html', {'jugglers': jugglers})
 
 def achievement(request, achievement_id):
