@@ -6,3 +6,6 @@ urlpatterns = patterns('juggletrack.views',
     (r'^juggler/(?P<juggler_id>\d+)/alter_achievements$', 'juggler_alter_ach'),
     (r'^achievement/(?P<achievement_id>\d+)/$', 'achievement'),
 )
+urlpatterns += patterns('',
+    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/mdrago/Code/tossup/juggletrack/static'}),
+)

@@ -4,6 +4,19 @@
 
 {% block content %}
 <h2>{{achievement.name}} - {{achievement.get_kind_display|title}} - {{achievement.points}} points</h3>
+<div>
+{% ifnotequal achievement.notation|length 0 %}
+<applet archive="/juggletrack/site_media/JugglingLab/bin/JugglingLab.jar" code="JugglingLab" width=400 height=450>
+<param name="config" value="entry=none;view=simple" />
+<param name="notation" value="{{achievement.notation_type}}"/>
+<param name='pattern' value='
+{{achievement.notation}}
+
+'/>
+Java not available
+</applet>
+{% endifnotequal %}
+</div>
 <h3>Jugglers</h3>
 {% if jugglers %}
 <table>

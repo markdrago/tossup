@@ -10,7 +10,10 @@ class Achievement(models.Model):
     points = models.IntegerField()
     kind = models.CharField(max_length=255, choices=KIND_CHOICES)
     date_created = models.DateTimeField('date created')
-    
+   
+    notation_type = models.CharField(max_length=255, choices=(('JML', 'JML'), ('SITESWAP','Siteswap')))
+    notation = models.TextField()
+
     def __unicode__(self):
         return self.name
 
