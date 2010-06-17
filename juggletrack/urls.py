@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import *
+import os
 
 urlpatterns = patterns('juggletrack.views',
     (r'^$', 'index'),
@@ -7,5 +8,8 @@ urlpatterns = patterns('juggletrack.views',
     (r'^achievement/(?P<achievement_id>\d+)/$', 'achievement'),
 )
 urlpatterns += patterns('',
-    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/mdrago/Code/tossup/juggletrack/static'}),
+    (r'^site_media/(?P<path>.*)$',
+     'django.views.static.serve',
+     {'document_root': os.path.join(os.path.abspath(os.path.curdir), 'juggletrack', 'static')}
+    ),
 )
