@@ -31,11 +31,31 @@ def juggler_alter_ach(request, juggler_id):
             ja = JugglerAchievement(juggler=j, achievement=ach)
             ja.save()
     if 'remove' in request.POST:
-        print "post remove: %s" % (request.POST.getlist('remove'),)
         for ach_to_rm in request.POST.getlist('remove'):
             ach = get_object_or_404(Achievement, pk=ach_to_rm)
             jaset = JugglerAchievement.objects.filter(juggler=j, achievement=ach)
             jaset[0].delete()
             
     return HttpResponseRedirect(reverse('juggletrack.views.juggler', args=(j.id,)))
+
+def juggler_diff(request):
+    juggler_ids = request.GET.getlist('juggler')
+    juggler1 = get_object_or_404(Juggler, pk=juggler_ids[0])
+    juggler2 = get_object_or_404(Juggler, pk=juggler_ids[1])
+    (only1, only2) = do_juggler_diff(juggler1, juggler2)
+    model = {'juggler1' : juggler1,
+             'juggler2' : juggler2,
+             'only1' : only1,
+             'only2' : only2}
+    return render_to_response('juggler_diff.html', model)
+                                                    
+    
+def do_juggler_diff(juggler1, juggler2):
+    ja1 = JugglerAchievement.objects.filter(juggler=juggler1).order_by('achievement__points')
+    ja2 = JugglerAchievement.objects.filter(juggler=juggler2).order_by('achievement__points')
+    ach1 = [a.achievement for a in ja1]
+    ach2 = [a.achievement for a in ja2]
+    only1 = [a for a in ach1 if a not in ach2]
+    only2 = [a for a in ach2 if a not in ach1]
+    return (only1, only2)
 

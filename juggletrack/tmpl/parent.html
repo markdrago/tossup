@@ -1,9 +1,9 @@
 <html>
 <head>
 <title>Juggle Track {% block title %}{% endblock %}</title>
+<script type="text/javascript" src="site_media/js/jquery.min.js"></script>
 <style type="text/css">
 table {
-//  border: thin solid black;
   border-collapse: collapse;
 }
 td, th {
@@ -17,6 +17,7 @@ input.submit_button {
   margin-top: 10px;
 }
 </style>
+{% block script %}{% endblock %}
 </head>
 <body>
 {% block content %}

@@ -1,0 +1,60 @@
+{% extends "parent.html" %}
+
+{% block title %} - {{juggler1.name}} vs. {{juggler2.name}}{% endblock %}
+
+{% block content %}
+<h2>Juggler Fight!</h2>
+<p>Each list shows the juggler's achievements which the other juggler has not achieved.</p>
+<div id="juggler1" style="float: left; padding-right: 20px;">
+<h2>{{juggler1.name}} - {{juggler1.score}} points</h2>
+{% if only1 %}
+<table>
+    <tr>
+        <th>Achievement</th>
+        <th>Points</th>
+        <th>Type</th>
+    </tr>
+    {% for ach in only1 %}
+    <tr>
+        <td><a href="achievement/{{ach.id}}">{{ach.name}}</a></td>
+        <td>{{ach.points}}</td>
+        <td>{{ach.get_kind_display|title}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+  {% if juggler1.score %}
+    All of {{juggler1.name}}'s achievements<br />have been achieved by {{juggler2.name}}.
+  {% else %}
+    {{juggler1.name}} does not have any achievements.
+  {% endif %}
+{% endif %}
+</div>
+
+<div id="juggler2" style="float: left;">
+<h2>{{juggler2.name}} - {{juggler2.score}} points</h2>
+{% if only2 %}
+<table>
+    <tr>
+        <th>Achievement</th>
+        <th>Points</th>
+        <th>Type</th>
+    </tr>
+    {% for ach in only2 %}
+    <tr>
+        <td><a href="achievement/{{ach.id}}">{{ach.name}}</a></td>
+        <td>{{ach.points}}</td>
+        <td>{{ach.get_kind_display|title}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+    {% if juggler2.score %}
+        All of {{juggler2.name}}'s achievements<br />have been achieved by {{juggler1.name}}
+    {% else %}
+        {{juggler2.name}} does not have any achievements.
+    {% endif %}
+{% endif %}
+</div>
+{% endblock %}
+
