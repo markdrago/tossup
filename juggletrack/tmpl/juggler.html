@@ -2,10 +2,51 @@
 
 {% block title %} - {{juggler.name}}{% endblock %}
 
+{% block script %}
+<script type="text/javascript">
+$().ready(function() {
+    var update_list = function() {
+        var select = $("#" + this.id)
+        var selected_points = select.val();
+
+        var rowclass = "";
+        if (select[0].id == "achieved_points_filter")
+            rowclass = "achieved_row";
+        else
+            rowclass = "unachieved_row";
+        
+        $("." + rowclass + " .points").each(function() {
+            var tdpoints = this.innerHTML;
+            var parent = this.parentElement;
+            
+            if (selected_points == "-1")
+                parent.style.setProperty("display", "table-row");
+            else
+                if (tdpoints == selected_points)
+                    parent.style.setProperty("display", "table-row");
+                else
+                    parent.style.setProperty("display", "none");
+        });
+    }
+    
+    $("#achieved_points_filter").change(update_list);
+    $("#unachieved_points_filter").change(update_list);
+});
+</script>
+{% endblock %}
+
 {% block content %}
-<h2>{{juggler.name}} - {{juggler.score}} points</h3>
+<h2>{{juggler.name}} - {{juggler.score}} points</h2>
 <h3>Achievements</h3>
 <form action="alter_achievements" method="post">
+<p>Show Achievements with Points:
+<select name="hello" id="achieved_points_filter">
+    <option value="-1">Any</option>
+    {% for points in achieved_points %}
+        <option value="{{points}}">{{points}}</option>
+    {% endfor %}
+</select>
+</p>
 <table>
     <tr>
         <th>Remove?</th>
@@ -15,16 +56,24 @@
         <th>Date Achieved</th>
     </tr>
     {% for ach in achievements %}
-    <tr>
+    <tr class="achieved_row">
         <td><input type="checkbox" name="remove" value="{{ach.achievement.id}}" /></td>
         <td><a href="../../achievement/{{ach.achievement.id}}">{{ach.achievement.name}}</a></td>
-        <td>{{ach.achievement.points}}</td>
+        <td class="points">{{ach.achievement.points}}</td>
         <td>{{ach.achievement.get_kind_display|title}}</td>
         <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
     </tr>
     {% endfor %}
 </table>
 <h3>Achievements Not Yet Achieved</h3>
+<p>Show Achievements with Points:
+<select id="unachieved_points_filter">
+    <option value="-1">Any</option>
+    {% for points in unachieved_points %}
+        <option value="{{points}}">{{points}}</option>
+    {% endfor %}
+</select>
+</p>
     <table>
         <tr>
             <th>Add?</th>
@@ -33,10 +82,10 @@
             <th>Type</th>
         </tr>
         {% for unach in unachieved %}
-        <tr>
+        <tr class="unachieved_row">
             <td><input type="checkbox" name="add" value="{{ unach.id }}" /></td>
             <td><a href="../../achievement/{{unach.id}}">{{unach.name}}</a></td>
-            <td>{{unach.points}}</td>
+            <td class="points">{{unach.points}}</td>
             <td>{{unach.get_kind_display|title}}</td>
         </tr>
         {% endfor %}

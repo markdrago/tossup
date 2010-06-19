@@ -19,9 +19,23 @@ def juggler(request, juggler_id):
     all_achievements = Achievement.objects.all()
     raw_ach = [x.achievement for x in achievements]
     unachieved = [x for x in all_achievements if x not in raw_ach]
+    
+    all_achieved_points = [x.achievement.points for x in achievements]
+    all_unachieved_points = [x.points for x in unachieved]
+    achieved_points = []
+    unachieved_points = []
+    for points in all_achieved_points:
+        if points not in achieved_points:
+            achieved_points.append(points)
+    for points in all_unachieved_points:
+        if points not in unachieved_points:
+            unachieved_points.append(points)
+            
     return render_to_response('juggler.html', {'juggler': juggler,
                                                'achievements': achievements,
-                                               'unachieved': unachieved})
+                                               'unachieved': unachieved,
+                                               'achieved_points': achieved_points,
+                                               'unachieved_points': unachieved_points})
 
 def juggler_alter_ach(request, juggler_id):
     j = get_object_or_404(Juggler, pk=juggler_id)
