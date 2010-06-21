@@ -5,32 +5,23 @@
 {% block script %}
 <script type="text/javascript">
 $().ready(function() {
-    var update_list = function() {
-        var select = $("#" + this.id)
+    var update_list = function(rowclass) {
+      return function() {
+        var select = $(this)
         var selected_points = select.val();
 
-        var rowclass = "";
-        if (select[0].id == "achieved_points_filter")
-            rowclass = "achieved_row";
-        else
-            rowclass = "unachieved_row";
-        
-        $("." + rowclass + " .points").each(function() {
-            var tdpoints = this.innerHTML;
-            var parent = this.parentElement;
-            
-            if (selected_points == "-1")
-                parent.style.setProperty("display", "table-row");
-            else
-                if (tdpoints == selected_points)
-                    parent.style.setProperty("display", "table-row");
-                else
-                    parent.style.setProperty("display", "none");
-        });
-    }
+        if (selected_points == -1) {
+          $("." + rowclass).show();
+        }
+        else {
+          $("." + rowclass).hide();
+          $("." + rowclass + ".point-" + selected_points).show();
+        }
+      }
+    };
     
-    $("#achieved_points_filter").change(update_list);
-    $("#unachieved_points_filter").change(update_list);
+    $("#achieved_points_filter").change(update_list("achieved_row"));
+    $("#unachieved_points_filter").change(update_list("unachieved_row"));
 });
 </script>
 {% endblock %}
@@ -56,7 +47,7 @@ $().ready(function() {
         <th>Date Achieved</th>
     </tr>
     {% for ach in achievements %}
-    <tr class="achieved_row">
+    <tr class="achieved_row point-{{ach.achievement.points}}">
         <td><input type="checkbox" name="remove" value="{{ach.achievement.id}}" /></td>
         <td><a href="../../achievement/{{ach.achievement.id}}">{{ach.achievement.name}}</a></td>
         <td class="points">{{ach.achievement.points}}</td>
@@ -82,7 +73,7 @@ $().ready(function() {
             <th>Type</th>
         </tr>
         {% for unach in unachieved %}
-        <tr class="unachieved_row">
+        <tr class="unachieved_row point-{{unach.points}}">
             <td><input type="checkbox" name="add" value="{{ unach.id }}" /></td>
             <td><a href="../../achievement/{{unach.id}}">{{unach.name}}</a></td>
             <td class="points">{{unach.points}}</td>
