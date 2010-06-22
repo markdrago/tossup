@@ -19,6 +19,7 @@ def juggler(request, juggler_id):
     all_achievements = Achievement.objects.all()
     raw_ach = [x.achievement for x in achievements]
     unachieved = [x for x in all_achievements if x not in raw_ach]
+    unachieved.sort(cmp=lambda x,y: cmp(x.points, y.points))
     
     all_achieved_points = [x.achievement.points for x in achievements]
     all_unachieved_points = [x.points for x in unachieved]
