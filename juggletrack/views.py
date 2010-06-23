@@ -10,8 +10,25 @@ def index(request):
 def achievement(request, achievement_id):
     ach = get_object_or_404(Achievement, pk=achievement_id)
     jugglers = JugglerAchievement.objects.filter(achievement=ach).order_by('date_created')
+    percent = achieved_percent(ach)
     return render_to_response('achievement.html', {'achievement': ach,
-                                                   'jugglers': jugglers})
+                                                   'jugglers': jugglers,
+                                                   'percent': percent})
+
+def achievements(request):
+    raw_achievements = Achievement.objects.all().order_by('points')
+    achievements = []
+    for rawach in raw_achievements:
+        achievements.append({"ach":rawach, "percent": achieved_percent(rawach)})
+    
+    return render_to_response('achievements.html', {'achievements': achievements})
+
+def achieved_percent(achievement):
+    total_jugglers = Juggler.objects.all().count()    
+    jas = JugglerAchievement.objects.filter(achievement=achievement).count()
+    if jas == 0:
+        return 0
+    return (float(jas) / float(total_jugglers)) * 100
 
 def juggler(request, juggler_id):
     juggler = get_object_or_404(Juggler, pk=juggler_id)
@@ -19,6 +36,7 @@ def juggler(request, juggler_id):
     all_achievements = Achievement.objects.all()
     raw_ach = [x.achievement for x in achievements]
     unachieved = [x for x in all_achievements if x not in raw_ach]
+    unachieved.sort(cmp=lambda x,y: cmp(x.points, y.points))
     
     all_achieved_points = [x.achievement.points for x in achievements]
     all_unachieved_points = [x.points for x in unachieved]

@@ -7,6 +7,7 @@ urlpatterns = patterns('juggletrack.views',
     (r'^juggler/(?P<juggler_id>\d+)/alter_achievements$', 'juggler_alter_ach'),
     (r'^achievement/(?P<achievement_id>\d+)/$', 'achievement'),
     (r'^juggler_diff', 'juggler_diff'),
+    (r'^achievements', 'achievements'),
 )
 urlpatterns += patterns('',
     (r'^site_media/(?P<path>.*)$',
