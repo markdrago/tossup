@@ -2,27 +2,34 @@
 
 {% block title %} - All Jugglers{% endblock %}
 
-{% block script %}
+{% block initjs %}
 <script type="text/javascript">
-function force_two_checked() {
-  var checkboxes = document.getElementsByName('juggler');
-  var count = 0;
-  for (var i in checkboxes) {
-    if (checkboxes[i].checked == true) {
-      count++;
+
+$().ready(function() {
+  var force_two_checked = function() {
+    var checkboxes = document.getElementsByName('juggler');
+    var count = 0;
+    for (var i in checkboxes) {
+      if (checkboxes[i].checked == true) {
+        count++;
+      }
+    }
+
+    var submit = document.getElementById('submit_button');
+    if (count == 2) {
+      submit.disabled = false;
+    } else {
+      submit.disabled = true;
     }
   }
 
-  var submit = document.getElementById('submit_button');
-  if (count == 2) {
-    submit.disabled = false;
-  } else {
-    submit.disabled = true;
-  }
-}
-
-$().ready(function() {
   force_two_checked();
+
+  $('#jugglers').dataTable({
+    "bPaginate": false,
+    "aaSorting": [[ 2, "desc" ]],
+  });
+  $('.juggle_check').click(force_two_checked);
 });
 </script>
 {% endblock %}
@@ -30,21 +37,26 @@ $().ready(function() {
 {% block content %}
 <h3>Jugglers</h3>
 <form action="juggler_diff" method="get">
-<table>
-<tr>
-<th></th>
-<th>Name</th>
-<th>Points</th>
-</tr>
-{% for juggler in jugglers %}
-<tr>
-<td><input type="checkbox" name="juggler" value="{{juggler.id}}" onclick="force_two_checked()" /></td>
-<td><a href="juggler/{{juggler.id}}/">{{ juggler.name }}</a></td>
-<td>{{ juggler.score }}</td>
-</tr>
-{% endfor %}
+<table id="jugglers" class="display">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Name</th>
+      <th>Points</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for juggler in jugglers %}
+    <tr>
+      <td><input type="checkbox" name="juggler" value="{{juggler.id}}" class="juggle_check" /></td>
+      <td><a href="juggler/{{juggler.id}}/">{{ juggler.name }}</a></td>
+      <td>{{ juggler.score }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
 </table>
-<input type="submit" id="submit_button" class="submit_button" value="Fight!" />
+<br />
+  <input type="submit" id="submit_button" class="submit_button" value="Fight!" />
 <p><a href="achievements">Achievements</a></p>
 </form>
 {% endblock %}

@@ -5,7 +5,8 @@
 {% block content %}
 <h2>All Achievements</h2>
 
-<table>
+<table id="achievements" class="display">
+  <thead>
     <tr>
         <th>Achievement</th>
         <th>Points</th>
@@ -13,15 +14,54 @@
         <th>Percent Achieved</th>
         <th>Date Created</th>
     </tr>
+  </thead>
+  <tbody>
     {% for ach in achievements %}
     <tr>
         <td><a href="achievement/{{ach.ach.id}}">{{ach.ach.name}}</a></td>
-        <td>{{ach.ach.points}}</td>
+        <td class="points">{{ach.ach.points}}</td>
         <td>{{ach.ach.get_kind_display|title}}</td>
         <td>{{ach.percent|floatformat:2}}%</td>
         <td>{{ach.ach.date_created|date:"M d, Y @ H:i"}}</td>
     </tr>
     {% endfor %}
+  </tbody>
 </table>
 {% endblock %}
 
+{% block initjs %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    var table = $('#achievements').dataTable({
+      "bPaginate": false,
+      "aaSorting": [[ 1, "asc" ]],
+    });
+
+    var pointValues = [''];
+    $('td.points').each(function() {
+      var pointValue = parseInt($(this).html());
+      var exists = false;
+      for(var i = 0; i < pointValues.length; i++) {
+        if(pointValues[i] === pointValue) {
+          exists = true;
+          break;
+        }
+      }
+      if(!exists) {
+        pointValues.push(pointValue);
+      }
+    });
+    var pointFilter = $('<select></select>').attr('name', 'points');
+    var makeOption = function(value) {
+      var option = $('<option></option>').attr('value', value).html((value === '') ? 'All' : value);
+      pointFilter.append(option);
+    };
+    $.map(pointValues, makeOption);
+
+    pointFilter.change(function() { 
+      table.fnFilter(this.value, 1);
+    });
+    $('#achievements_filter').before($('<label></label>').html('Show Achievements with Points: ').append(pointFilter));
+  });
+</script>
+{% endblock %}

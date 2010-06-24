@@ -19,20 +19,33 @@ Java not available
 </div>
 <h3>Jugglers</h3>
 {% if jugglers %}
-<table>
+<table id="jugglers" class="display">
+  <thead>
     <tr>
         <th>Name</th>
         <th>Date Achieved</th>
     </tr>
+  </thead>
+  <tbody>
     {% for j in jugglers %}
     <tr>
         <td><a href="../../juggler/{{j.juggler.id}}">{{j.juggler.name}}</a></td>
         <td>{{j.date_created|date:"M d, Y @ H:i"}}</td>
     </tr>
     {% endfor %}
+  </tbody>
 </table>
 {% else %}
 <p>Nobody has achieved this yet.</p>
 {% endif %}
 {% endblock %}
 
+{% block initjs %}
+<script type="text/javascript">
+  $('#jugglers').dataTable({
+    "bPaginate": false,
+    "aaSorting": [[ 1, "desc" ]],
+    "bFilter": false,
+  });
+</script>
+{% endblock %}

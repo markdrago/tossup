@@ -2,6 +2,8 @@
 <head>
 <title>Juggle Track {% block title %}{% endblock %}</title>
 <script type="text/javascript" src="/juggletrack/site_media/js/jquery.min.js"></script>
+<script type="text/javascript" src="/juggletrack/site_media/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/juggletrack/site_media/css/table.css" />
 <style type="text/css">
 table {
   border-collapse: collapse;
@@ -23,5 +25,7 @@ input.submit_button {
 {% block content %}
 {% endblock %}
 </body>
+{% block initjs %}
+{% endblock %}
 </html>
 
