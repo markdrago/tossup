@@ -16,11 +16,7 @@ def achievement(request, achievement_id):
                                                    'percent': percent})
 
 def achievements(request):
-    raw_achievements = Achievement.objects.all().order_by('points')
-    achievements = []
-    for rawach in raw_achievements:
-        achievements.append({"ach":rawach, "percent": achieved_percent(rawach)})
-    
+    achievements = Achievement.objects.all().order_by('points')
     return render_to_response('achievements.html', {'achievements': achievements})
 
 def achieved_percent(achievement):
@@ -32,28 +28,29 @@ def achieved_percent(achievement):
 
 def juggler(request, juggler_id):
     juggler = get_object_or_404(Juggler, pk=juggler_id)
-    achievements = JugglerAchievement.objects.filter(juggler=juggler).order_by('achievement__points')
+    achievements = list(JugglerAchievement.objects.filter(juggler=juggler))
+    achievements.sort(cmp=lambda x,y: cmp(x.achievement.value(), y.achievement.value()))
     all_achievements = Achievement.objects.all()
     raw_ach = [x.achievement for x in achievements]
     unachieved = [x for x in all_achievements if x not in raw_ach]
-    unachieved.sort(cmp=lambda x,y: cmp(x.points, y.points))
+    unachieved.sort(cmp=lambda x,y: cmp(x.value(), y.value()))
     
-    all_achieved_points = [x.achievement.points for x in achievements]
-    all_unachieved_points = [x.points for x in unachieved]
-    achieved_points = []
-    unachieved_points = []
-    for points in all_achieved_points:
-        if points not in achieved_points:
-            achieved_points.append(points)
-    for points in all_unachieved_points:
-        if points not in unachieved_points:
-            unachieved_points.append(points)
+    all_achieved_values = [x.achievement.value() for x in achievements]
+    all_unachieved_values = [x.value() for x in unachieved]
+    achieved_values = []
+    unachieved_values = []
+    for values in all_achieved_values:
+        if values not in achieved_values:
+            achieved_values.append(values)
+    for values in all_unachieved_values:
+        if values not in unachieved_values:
+            unachieved_values.append(values)
             
     return render_to_response('juggler.html', {'juggler': juggler,
                                                'achievements': achievements,
                                                'unachieved': unachieved,
-                                               'achieved_points': achieved_points,
-                                               'unachieved_points': unachieved_points})
+                                               'achieved_values': achieved_values,
+                                               'unachieved_values': unachieved_values})
 
 def juggler_alter_ach(request, juggler_id):
     j = get_object_or_404(Juggler, pk=juggler_id)

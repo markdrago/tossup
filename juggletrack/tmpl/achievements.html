@@ -9,17 +9,17 @@
     <tr>
         <th>Achievement</th>
         <th>Points</th>
+        <th>Value</th>
         <th>Type</th>
-        <th>Percent Achieved</th>
         <th>Date Created</th>
     </tr>
     {% for ach in achievements %}
     <tr>
-        <td><a href="achievement/{{ach.ach.id}}">{{ach.ach.name}}</a></td>
-        <td>{{ach.ach.points}}</td>
-        <td>{{ach.ach.get_kind_display|title}}</td>
-        <td>{{ach.percent|floatformat:2}}%</td>
-        <td>{{ach.ach.date_created|date:"M d, Y @ H:i"}}</td>
+        <td><a href="achievement/{{ach.id}}">{{ach.name}}</a></td>
+        <td>{{ach.points}}</td>
+        <td>{{ach.value|floatformat:2}}</td>
+        <td>{{ach.get_kind_display|title}}</td>
+        <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
     </tr>
     {% endfor %}
 </table>

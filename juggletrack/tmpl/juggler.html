@@ -8,33 +8,33 @@ $().ready(function() {
     var update_list = function(rowclass) {
       return function() {
         var select = $(this)
-        var selected_points = select.val();
+        var selected_value = select.val();
 
-        if (selected_points == -1) {
+        if (selected_value == -1) {
           $("." + rowclass).show();
         }
         else {
           $("." + rowclass).hide();
-          $("." + rowclass + ".point-" + selected_points).show();
+          $("." + rowclass + ".value-" + selected_value).show();
         }
       }
     };
     
-    $("#achieved_points_filter").change(update_list("achieved_row"));
-    $("#unachieved_points_filter").change(update_list("unachieved_row"));
+    $("#achieved_values_filter").change(update_list("achieved_row"));
+    $("#unachieved_values_filter").change(update_list("unachieved_row"));
 });
 </script>
 {% endblock %}
 
 {% block content %}
-<h2>{{juggler.name}} - {{juggler.score}} points</h2>
+<h2>{{juggler.name}} - {{juggler.score}} points - {{juggler.total_value|floatformat:2}} total value</h2>
 <h3>Achievements</h3>
 <form action="alter_achievements" method="post">
-<p>Show Achievements with Points:
-<select name="hello" id="achieved_points_filter">
+<p>Show Achievements with Value:
+<select name="hello" id="achieved_values_filter">
     <option value="-1">Any</option>
-    {% for points in achieved_points %}
-        <option value="{{points}}">{{points}}</option>
+    {% for value in achieved_values %}
+        <option value="{{value|floatformat:2|cut:'.'}}">{{value|floatformat:2}}</option>
     {% endfor %}
 </select>
 </p>
@@ -43,25 +43,27 @@ $().ready(function() {
         <th>Remove?</th>
         <th>Achievement</th>
         <th>Points</th>
+        <th>Value</th>
         <th>Type</th>
         <th>Date Achieved</th>
     </tr>
     {% for ach in achievements %}
-    <tr class="achieved_row point-{{ach.achievement.points}}">
+    <tr class="achieved_row value-{{ach.achievement.value|floatformat:2|cut:'.'}}">
         <td><input type="checkbox" name="remove" value="{{ach.achievement.id}}" /></td>
         <td><a href="../../achievement/{{ach.achievement.id}}">{{ach.achievement.name}}</a></td>
         <td>{{ach.achievement.points}}</td>
+        <td>{{ach.achievement.value|floatformat:2}}</td>
         <td>{{ach.achievement.get_kind_display|title}}</td>
         <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
     </tr>
     {% endfor %}
 </table>
 <h3>Achievements Not Yet Achieved</h3>
-<p>Show Achievements with Points:
-<select id="unachieved_points_filter">
+<p>Show Achievements with Values:
+<select id="unachieved_values_filter">
     <option value="-1">Any</option>
-    {% for points in unachieved_points %}
-        <option value="{{points}}">{{points}}</option>
+    {% for value in unachieved_values %}
+        <option value="{{value|floatformat:2|cut:'.'}}">{{value|floatformat:2}}</option>
     {% endfor %}
 </select>
 </p>
@@ -70,13 +72,15 @@ $().ready(function() {
             <th>Add?</th>
             <th>Achievement</th>
             <th>Points</th>
+            <th>Value</th>
             <th>Type</th>
         </tr>
         {% for unach in unachieved %}
-        <tr class="unachieved_row point-{{unach.points}}">
+        <tr class="unachieved_row value-{{unach.value|floatformat:2|cut:'.'}}">
             <td><input type="checkbox" name="add" value="{{ unach.id }}" /></td>
             <td><a href="../../achievement/{{unach.id}}">{{unach.name}}</a></td>
             <td>{{unach.points}}</td>
+            <td>{{unach.value|floatformat:2}}</td>
             <td>{{unach.get_kind_display|title}}</td>
         </tr>
         {% endfor %}

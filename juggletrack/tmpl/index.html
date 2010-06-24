@@ -35,12 +35,14 @@ $().ready(function() {
 <th></th>
 <th>Name</th>
 <th>Points</th>
+<th>Total Value</th>
 </tr>
 {% for juggler in jugglers %}
 <tr>
 <td><input type="checkbox" name="juggler" value="{{juggler.id}}" onclick="force_two_checked()" /></td>
 <td><a href="juggler/{{juggler.id}}/">{{ juggler.name }}</a></td>
 <td>{{ juggler.score }}</td>
+<td>{{juggler.total_value|floatformat:2}}</td>
 </tr>
 {% endfor %}
 </table>

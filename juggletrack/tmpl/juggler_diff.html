@@ -12,12 +12,14 @@
     <tr>
         <th>Achievement</th>
         <th>Points</th>
+        <th>Value</th>
         <th>Type</th>
     </tr>
     {% for ach in only1 %}
     <tr>
         <td><a href="achievement/{{ach.id}}">{{ach.name}}</a></td>
         <td>{{ach.points}}</td>
+        <td>{{ach.value|floatformat:2}}</td>
         <td>{{ach.get_kind_display|title}}</td>
     </tr>
     {% endfor %}
@@ -38,12 +40,14 @@
     <tr>
         <th>Achievement</th>
         <th>Points</th>
+        <th>Value</th>
         <th>Type</th>
     </tr>
     {% for ach in only2 %}
     <tr>
         <td><a href="achievement/{{ach.id}}">{{ach.name}}</a></td>
         <td>{{ach.points}}</td>
+        <td>{{ach.value|floatformat:2}}</td>
         <td>{{ach.get_kind_display|title}}</td>
     </tr>
     {% endfor %}
