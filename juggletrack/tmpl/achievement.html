@@ -3,7 +3,12 @@
 {% block title %} - {{achievement.name}}{% endblock %}
 
 {% block content %}
-<h2>{{achievement.name}} - {{achievement.get_kind_display|title}} - {{achievement.points}} points - {{percent|floatformat:2}}% Achieved</h3>
+<h2>{{achievement.name}}</h2>
+<table>
+<tr><th>Type</th><td>{{achievement.get_kind_display|title}}</td></tr>
+<tr><th>Points</th><td>{{achievement.points}}</td></tr>
+<tr><th>Value</th><td>{{achievement.value|floatformat:2}}</td></tr>
+</table>
 <div>
 {% ifnotequal achievement.notation|length 0 %}
 <applet archive="/juggletrack/site_media/JugglingLab/bin/JugglingLab.jar" code="JugglingLab" width=400 height=450>

@@ -2,9 +2,8 @@
 
 {% block title %} - {{juggler.name}}{% endblock %}
 
-
 {% block content %}
-<h2>{{juggler.name}} - {{juggler.score}} points</h2>
+<h2>{{juggler.name}} - {{juggler.score}} points - {{juggler.total_value|floatformat:2}} total value</h2>
 <h3>Achievements</h3>
 <form action="alter_achievements" method="post">
 <table id="achieved" class="display">
@@ -13,16 +12,18 @@
         <th>Remove?</th>
         <th>Achievement</th>
         <th>Points</th>
+        <th>Value</th>
         <th>Type</th>
         <th>Date Achieved</th>
     </tr>
   </thead>
   <tbody>
     {% for ach in achievements %}
-    <tr class="achieved_row point-{{ach.achievement.points}}">
+    <tr class="achieved_row value-{{ach.achievement.value|floatformat:2|cut:'.'}}">
         <td><input type="checkbox" name="remove" value="{{ach.achievement.id}}" /></td>
         <td><a href="../../achievement/{{ach.achievement.id}}">{{ach.achievement.name}}</a></td>
-        <td class="points">{{ach.achievement.points}}</td>
+        <td>{{ach.achievement.points}}</td>
+        <td class="points">{{ach.achievement.value|floatformat:2}}</td>
         <td>{{ach.achievement.get_kind_display|title}}</td>
         <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
     </tr>
@@ -37,15 +38,17 @@
             <th>Add?</th>
             <th>Achievement</th>
             <th>Points</th>
+            <th>Value</th>
             <th>Type</th>
         </tr>
       </thead>
       <tbody>
         {% for unach in unachieved %}
-        <tr class="unachieved_row point-{{unach.points}}">
+        <tr class="unachieved_row value-{{unach.value|floatformat:2|cut:'.'}}">
             <td><input type="checkbox" name="add" value="{{ unach.id }}" /></td>
             <td><a href="../../achievement/{{unach.id}}">{{unach.name}}</a></td>
-            <td class="points">{{unach.points}}</td>
+            <td>{{unach.points}}</td>
+            <td class="points">{{unach.value|floatformat:2}}</td>
             <td>{{unach.get_kind_display|title}}</td>
         </tr>
         {% endfor %}

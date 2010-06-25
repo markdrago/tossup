@@ -38,22 +38,24 @@ $().ready(function() {
 <h3>Jugglers</h3>
 <form action="juggler_diff" method="get">
 <table id="jugglers" class="display">
-  <thead>
-    <tr>
-      <th></th>
-      <th>Name</th>
-      <th>Points</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for juggler in jugglers %}
-    <tr>
-      <td><input type="checkbox" name="juggler" value="{{juggler.id}}" class="juggle_check" /></td>
-      <td><a href="juggler/{{juggler.id}}/">{{ juggler.name }}</a></td>
-      <td>{{ juggler.score }}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
+<thead>
+<tr>
+<th></th>
+<th>Name</th>
+<th>Points</th>
+<th>Total Value</th>
+</thead>
+<tbody>
+</tr>
+{% for juggler in jugglers %}
+<tr>
+<td><input type="checkbox" name="juggler" value="{{juggler.id}}" class="juggle_check" /></td>
+<td><a href="juggler/{{juggler.id}}/">{{ juggler.name }}</a></td>
+<td>{{ juggler.score }}</td>
+<td>{{juggler.total_value|floatformat:2}}</td>
+</tr>
+{% endfor %}
+</tbody>
 </table>
 <br />
   <input type="submit" id="submit_button" class="submit_button" value="Fight!" />
