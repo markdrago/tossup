@@ -17,10 +17,11 @@ class Achievement(models.Model):
         return self.name
     
     def value(self):
-        total = Juggler.objects.all().count()
+        total = Juggler.objects.annotate(num_ach=models.Count('achievement')).filter(num_ach__gt=0).count()
         if total == 0: return 0
         achieved = self.juggler_set.count()
-        return 100 - ((float(achieved) / total) * 100)        
+        if achieved == 0: return -1
+        return max(1, 100 - ((float(achieved - 1) / total) * 100))
 
 class Juggler(models.Model):
     name = models.CharField(max_length=255)
