@@ -7,7 +7,14 @@
 <table>
 <tr><th>Type</th><td>{{achievement.get_kind_display|title}}</td></tr>
 <tr><th>Points</th><td>{{achievement.points}}</td></tr>
-<tr><th>Value</th><td>{{achievement.value|floatformat:2}}</td></tr>
+<tr><th>Value</th>
+<td>
+  {% ifequal achievement.value 101 %}
+    N/A
+  {% else %}
+    {{achievement.value|floatformat:2}}
+  {% endifequal %}
+</td></tr>
 </table>
 <div>
 {% ifnotequal achievement.notation|length 0 %}
@@ -34,7 +41,7 @@ Java not available
   <tbody>
     {% for j in jugglers %}
     <tr>
-        <td><a href="../../juggler/{{j.juggler.id}}">{{j.juggler.name}}</a></td>
+        <td><a href="../../juggler/{{j.juggler.idu}}">{{j.juggler.name}}</a></td>
         <td>{{j.date_created|date:"M d, Y @ H:i"}}</td>
     </tr>
     {% endfor %}

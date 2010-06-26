@@ -20,7 +20,7 @@
     <tr>
         <td><a href="achievement/{{ach.id}}">{{ach.name}}</a></td>
         <td>{{ach.points}}</td>
-        <td class="points">{{ach.value|floatformat:2}}</td>
+        <td class="value">{{ach.value|floatformat:2}}</td>
         <td>{{ach.get_kind_display|title}}</td>
         <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
     </tr>
@@ -32,36 +32,51 @@
 {% block initjs %}
 <script type="text/javascript">
   $(document).ready(function() {
+     var renderNAs = function(obj) {
+       if (obj.aData[2] == "101.00")
+         return "N/A";
+     return obj.aData[2];
+    }
+  
     var table = $('#achievements').dataTable({
       "bPaginate": false,
-      "aaSorting": [[ 1, "asc" ]],
+      "aaSorting": [[ 2, "asc" ]],
+      "aoColumns": [{"sType": "html"}, null,
+        {"sType": "numeric",
+         "fnRender": renderNAs,
+         "bUseRendered": false},
+        null, null]
     });
 
-    var pointValues = [''];
-    $('td.points').each(function() {
-      var pointValue = parseInt($(this).html());
+    var values = [''];
+    $('td.value').each(function() {
+      var value = $(this).html();
       var exists = false;
-      for(var i = 0; i < pointValues.length; i++) {
-        if(pointValues[i] === pointValue) {
+      for(var i = 0; i < values.length; i++) {
+        if(values[i] === value) {
           exists = true;
           break;
         }
       }
       if(!exists) {
-        pointValues.push(pointValue);
+        values.push(value);
       }
     });
-    var pointFilter = $('<select></select>').attr('name', 'points');
+    
+    var valueFilter = $('<select></select>').attr('name', 'values');
     var makeOption = function(value) {
       var option = $('<option></option>').attr('value', value).html((value === '') ? 'All' : value);
-      pointFilter.append(option);
+      valueFilter.append(option);
     };
-    $.map(pointValues, makeOption);
+    $.map(values, makeOption);
 
-    pointFilter.change(function() { 
-      table.fnFilter(this.value, 1);
+    valueFilter.change(function() { 
+      if (this.value == "N/A")
+        table.fnFilter("101.00", 2);
+      else
+        table.fnFilter(this.value, 2);
     });
-    $('#achievements_filter').before($('<label></label>').html('Show Achievements with Value: ').append(pointFilter));
+    $('#achievements_filter').before($('<label></label>').html('Show Achievements with Value: ').append(valueFilter));
   });
 </script>
 {% endblock %}

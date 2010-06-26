@@ -19,11 +19,11 @@
   </thead>
   <tbody>
     {% for ach in achievements %}
-    <tr class="achieved_row value-{{ach.achievement.value|floatformat:2|cut:'.'}}">
+    <tr>
         <td><input type="checkbox" name="remove" value="{{ach.achievement.id}}" /></td>
         <td><a href="../../achievement/{{ach.achievement.id}}">{{ach.achievement.name}}</a></td>
         <td>{{ach.achievement.points}}</td>
-        <td class="points">{{ach.achievement.value|floatformat:2}}</td>
+        <td class="value">{{ach.achievement.value|floatformat:2}}</td>
         <td>{{ach.achievement.get_kind_display|title}}</td>
         <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
     </tr>
@@ -44,11 +44,11 @@
       </thead>
       <tbody>
         {% for unach in unachieved %}
-        <tr class="unachieved_row value-{{unach.value|floatformat:2|cut:'.'}}">
+        <tr>
             <td><input type="checkbox" name="add" value="{{ unach.id }}" /></td>
             <td><a href="../../achievement/{{unach.id}}">{{unach.name}}</a></td>
             <td>{{unach.points}}</td>
-            <td class="points">{{unach.value|floatformat:2}}</td>
+            <td class="value">{{unach.value|floatformat:2}}</td>
             <td>{{unach.get_kind_display|title}}</td>
         </tr>
         {% endfor %}
@@ -62,41 +62,59 @@
 {% block initjs %}
 <script type="text/javascript">
 $(document).ready(function() {
-  var t = $('#achieved');
+  var renderNAs = function(obj) {
+    if (obj.aData[3] == "101.00")
+      return "N/A";
+    return obj.aData[3];
+  }
+
   var t1 = $('#achieved').dataTable({
     "bPaginate": false,
-    "aaSorting": [[ 2, "asc" ]],
+    "aaSorting": [[ 3, "asc" ]],
+    "aoColumns": [null, {"sType": "html"}, null,
+            {"sType": "numeric",
+             "fnRender": renderNAs,
+             "bUseRendered": false},
+             null, null]
   });
   var t2 = $('#unachieved').dataTable({
     "bPaginate": false,
-    "aaSorting": [[ 2, "asc" ]],
+    "aaSorting": [[ 3, "asc" ]],
+    "aoColumns": [null, {"sType": "html"}, null,
+            {"sType": "numeric",
+             "fnRender": renderNAs,
+             "bUseRendered": false},
+             null]
   });
 
   $.map([t1, t2], function(table) {
-    var pointValues = [''];
-    table.find('td.points').each(function() {
-      var pointValue = parseInt($(this).html());
+    var values = [''];
+    table.find('td.value').each(function() {
+      var value = $(this).html();
       var exists = false;
-      for(var i = 0; i< pointValues.length; i++) {
-        if(pointValues[i] === pointValue) {
+      for(var i = 0; i< values.length; i++) {
+        if(values[i] === value) {
           exists = true;
           break;
         }
       }
       if(!exists) {
-        pointValues.push(pointValue);
+        values.push(value);
       }
     });
-    var pointFilter = $('<select></select>').attr('name', 'points');
+    var valueFilter = $('<select></select>').attr('name', 'value');
     var makeOption = function(value) {
       var option = $('<option></option>').attr('value', value).html((value === '') ? 'All' : value);
-      pointFilter.append(option);
+      valueFilter.append(option);
     };
-    $.map(pointValues, makeOption);
-    pointFilter.change(function() {
-      table.fnFilter(this.value, 2);
+    $.map(values, makeOption);
+    valueFilter.change(function() {
+      if (this.value == "N/A")
+        table.fnFilter("101.00", 3);
+      else
+        table.fnFilter(this.value, 3);
     });
-    $("#" + table.attr('id') + "_filter").before($('<label></label>').html('Show Achievements with Points: ').append(pointFilter));
+    $("#" + table.attr('id') + "_filter").before($('<label></label>').html('Show Achievements with Value: ').append(valueFilter));
   });
 });
 </script>

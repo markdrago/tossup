@@ -22,7 +22,13 @@
     <tr>
         <td><a href="achievement/{{ach.id}}">{{ach.name}}</a></td>
         <td>{{ach.points}}</td>
-        <td>{{ach.value|floatformat:2}}</td>
+        <td>
+          {% ifequal ach.value 101 %}
+            N/A
+          {% else %}
+            {{ach.value|floatformat:2}}
+          {% endifequal %}
+        </td>
         <td>{{ach.get_kind_display|title}}</td>
     </tr>
     {% endfor %}
@@ -54,7 +60,13 @@
     <tr>
         <td><a href="achievement/{{ach.id}}">{{ach.name}}</a></td>
         <td>{{ach.points}}</td>
-        <td>{{ach.value|floatformat:2}}</td>
+        <td>
+          {% ifequal ach.value 101 %}
+            N/A
+          {% else %}
+            {{ach.value|floatformat:2}}
+          {% endifequal %}
+        </td>>
         <td>{{ach.get_kind_display|title}}</td>
     </tr>
     {% endfor %}
@@ -73,7 +85,12 @@
 {% block initjs %}
 <script type="text/javascript">
   $(document).ready(function() {
-    var tableSettings = { "bPaginate": false, "bFilter": false, "aaSorting": [[ 1, "desc" ]]}
+    var tableSettings = {
+      "bPaginate": false,
+      "bFilter": false,
+      "aaSorting": [[ 2, "desc" ]],
+      "aoColumns": [{"sType": "html"}, null, {"sType": "numeric"}, null]
+    };
     $('#juggler-1').dataTable(tableSettings);
     $('#juggler-2').dataTable(tableSettings);
   });

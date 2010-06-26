@@ -20,7 +20,7 @@ class Achievement(models.Model):
         total = Juggler.objects.annotate(num_ach=models.Count('achievement')).filter(num_ach__gt=0).count()
         if total == 0: return 0
         achieved = self.juggler_set.count()
-        if achieved == 0: return -1
+        if achieved == 0: return 101
         return max(1, 100 - ((float(achieved - 1) / total) * 100))
 
 class Juggler(models.Model):
@@ -40,6 +40,8 @@ class Juggler(models.Model):
     def total_value(self):
         total = 0
         for ach in self.achievement.all():
+            if ach.value() > 100:
+                continue
             total += ach.value()
         return total
 

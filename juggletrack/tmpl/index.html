@@ -27,7 +27,8 @@ $().ready(function() {
 
   $('#jugglers').dataTable({
     "bPaginate": false,
-    "aaSorting": [[ 2, "desc" ]],
+    "aaSorting": [[ 3, "desc" ]],
+    "aoColumns": [null, {"sType": "html"}, null, null]
   });
   $('.juggle_check').click(force_two_checked);
 });
