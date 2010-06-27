@@ -76,6 +76,7 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'tagging',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -83,3 +84,5 @@ INSTALLED_APPS = (
     'tossup.juggletrack',
     'django.contrib.admin'
 )
+
+FORCE_LOWERCASE_TAGS = True

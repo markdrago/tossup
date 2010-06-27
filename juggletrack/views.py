@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from models import Juggler, Achievement, JugglerAchievement
+from tagging.models import Tag, TaggedItem
 
 def index(request):
     return HttpResponseRedirect(reverse('juggletrack.views.jugglers'))
@@ -16,18 +17,34 @@ def achievement(request, achievement_id):
     percent = achieved_percent(ach)
     return render_to_response('achievement.html', {'achievement': ach,
                                                    'jugglers': jugglers,
-                                                   'percent': percent, 'request':request})
+                                                   'percent': percent, 
+                                                   'tags': ",".join([t.name for t in Tag.objects.get_for_object(ach)]),
+                                                   'request':request})
+
+def achievement_settags(request, achievement_id):
+    ach = get_object_or_404(Achievement, pk=achievement_id)
+    if 'tags' in request.POST:
+        Tag.objects.update_tags(ach, request.POST.get('tags'))
+    return HttpResponseRedirect(reverse('juggletrack.views.achievement', args=(achievement_id,)))
+
+def achievements_with_tag(request, tag_str):
+    tag = Tag.objects.get(name=tag_str)
+    raw_achievements = TaggedItem.objects.get_by_model(Achievement, tag)
+
+    return render_to_response('achievements_with_tag.html', {'tag': tag, 
+                                                            'achievements': _add_percent(raw_achievements),
+                                                            'request': request})
 
 def achievements(request):
     raw_achievements = Achievement.objects.all().order_by('points')
-    achievements = []
-    for rawach in raw_achievements:
-        achievements.append({"ach":rawach, "percent": achieved_percent(rawach)})
     
-    print(achievements)
-    return render_to_response('achievements.html', {'achievements': achievements, 'request':request})
+    return render_to_response('achievements.html', {'achievements': _add_percent(raw_achievements), 
+                                                    'request':request})
 
-def achieved_percent(achievement):
+def _add_percent(raw_achievements):
+    return [{'ach': a, 'percent': _achieved_percent(a)} for a in raw_achievements]
+
+def _achieved_percent(achievement):
     total_jugglers = Juggler.objects.all().count()    
     jas = JugglerAchievement.objects.filter(achievement=achievement).count()
     if jas == 0:

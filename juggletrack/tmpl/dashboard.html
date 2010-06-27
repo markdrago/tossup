@@ -1,4 +1,5 @@
 {% extends "parent.html" %}
+{% load tagging_tags %}
 
 {% block title %}Dashboard{% endblock %}
 {% block script %}
@@ -7,7 +8,7 @@
 {% block content %}
     <div class="wrapper">
         <div class="module recent-activity">
-        <div class="section-head">Recent Activity</div>
+            <div class="section-head">Recent Activity</div>
             <ol class="events">
                 {% for event in events %} 
                 <li class="event">
@@ -18,6 +19,17 @@
                 </li>
                 {% endfor %}
             </ol>
+        </div>
+    </div>
+    <div class="wrapper">
+        <div class="module tags">
+            <div class="section-head">Tags</div>
+            {% tag_cloud_for_model juggletrack.Achievement as tag_cloud %}
+            {% for tag in tag_cloud %}
+            <span class="tag" style="font-size:{{tag.font_size}}em;">
+                <a href="{% url juggletrack.views.achievements_with_tag tag.name %}">{{tag.name}}</a>
+            </span>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

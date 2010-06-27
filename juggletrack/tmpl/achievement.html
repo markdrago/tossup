@@ -17,6 +17,11 @@ Java not available
 </applet>
 {% endifnotequal %}
 </div>
+<h3>Tags</h3>
+<form action="{% url juggletrack.views.achievement_settags achievement.id %}" method="post">
+        <input name="tags" type="text" value="{{tags}}" />
+        <input type="submit" value="Set Tags" />
+    </form>
 <h3>Jugglers</h3>
 {% if jugglers %}
 <table id="jugglers" class="display">

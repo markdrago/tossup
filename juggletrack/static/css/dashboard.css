@@ -57,14 +57,15 @@ ol.events span.event-body .event-content {
     
 }
 
-ol.events span.event-body .event-content a {
+div.module a {
     text-decoration: none;
 }
 
-ol.events span.event-body .event-content a:visited {
+div.module a:visited {
     color: blue;
 }
 
-ol.events span.event-body .event-content a:hover {
+div.module a:hover {
     color: #36f;
 }
+

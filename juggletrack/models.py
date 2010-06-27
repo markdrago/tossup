@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 
+import tagging
+
 class Achievement(models.Model):
     KIND_CHOICES = (
         ('STUNT', 'Stunt'),
@@ -23,6 +25,7 @@ class Achievement(models.Model):
 
     def view(self):
         return reverse('juggletrack.views.achievement', args=(self.id,))
+
 
 class Juggler(models.Model):
     name = models.CharField(max_length=255)
