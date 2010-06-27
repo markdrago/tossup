@@ -7,7 +7,6 @@ class Achievement(models.Model):
     )
 
     name = models.CharField(max_length=255)
-    points = models.IntegerField()
     kind = models.CharField(max_length=255, choices=KIND_CHOICES)
     date_created = models.DateTimeField('date created')
     notation_type = models.CharField(max_length=255, choices=(('JML', 'JML'), ('SITESWAP','Siteswap')))
@@ -30,12 +29,6 @@ class Juggler(models.Model):
     
     def __unicode__(self):
         return self.name
-    
-    def score(self):
-        score = 0
-        for ach in self.achievement.all():
-            score += ach.points
-        return score
     
     def total_value(self):
         total = 0

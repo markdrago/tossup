@@ -9,7 +9,6 @@
   <thead>
     <tr>
         <th>Achievement</th>
-        <th>Points</th>
         <th>Value</th>
         <th>Type</th>
         <th>Date Created</th>
@@ -19,7 +18,6 @@
     {% for ach in achievements %}
     <tr>
         <td><a href="achievement/{{ach.id}}">{{ach.name}}</a></td>
-        <td>{{ach.points}}</td>
         <td class="value">{{ach.value|floatformat:2}}</td>
         <td>{{ach.get_kind_display|title}}</td>
         <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
@@ -33,15 +31,15 @@
 <script type="text/javascript">
   $(document).ready(function() {
      var renderNAs = function(obj) {
-       if (obj.aData[2] == "101.00")
+       if (obj.aData[1] == "101.00")
          return "N/A";
-     return obj.aData[2];
+     return obj.aData[1];
     }
   
     var table = $('#achievements').dataTable({
       "bPaginate": false,
-      "aaSorting": [[ 2, "asc" ]],
-      "aoColumns": [{"sType": "html"}, null,
+      "aaSorting": [[ 1, "asc" ]],
+      "aoColumns": [{"sType": "html"},
         {"sType": "numeric",
          "fnRender": renderNAs,
          "bUseRendered": false},
@@ -72,9 +70,9 @@
 
     valueFilter.change(function() { 
       if (this.value == "N/A")
-        table.fnFilter("101.00", 2);
+        table.fnFilter("101.00", 1);
       else
-        table.fnFilter(this.value, 2);
+        table.fnFilter(this.value, 1);
     });
     $('#achievements_filter').before($('<label></label>').html('Show Achievements with Value: ').append(valueFilter));
   });

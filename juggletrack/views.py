@@ -16,7 +16,7 @@ def achievement(request, achievement_id):
                                                    'percent': percent})
 
 def achievements(request):
-    achievements = Achievement.objects.all().order_by('points')
+    achievements = Achievement.objects.all()
     return render_to_response('achievements.html', {'achievements': achievements})
 
 def achieved_percent(achievement):
@@ -80,8 +80,8 @@ def juggler_diff(request):
                                                     
     
 def do_juggler_diff(juggler1, juggler2):
-    ja1 = JugglerAchievement.objects.filter(juggler=juggler1).order_by('achievement__points')
-    ja2 = JugglerAchievement.objects.filter(juggler=juggler2).order_by('achievement__points')
+    ja1 = JugglerAchievement.objects.filter(juggler=juggler1)
+    ja2 = JugglerAchievement.objects.filter(juggler=juggler2)
     ach1 = [a.achievement for a in ja1]
     ach2 = [a.achievement for a in ja2]
     only1 = [a for a in ach1 if a not in ach2]

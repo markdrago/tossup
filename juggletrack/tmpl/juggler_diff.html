@@ -6,13 +6,12 @@
 <h2>Juggler Fight!</h2>
 <p>Each list shows the juggler's achievements which the other juggler has not achieved.</p>
 <div id="juggler1" style="float: left; padding-right: 20px;">
-<h2>{{juggler1.name}} - {{juggler1.score}} points</h2>
+<h2>{{juggler1.name}} - {{juggler1.total_value|floatformat:2}} total value</h2>
 {% if only1 %}
 <table id="juggler-1" class="display">
   <thead>
     <tr>
         <th>Achievement</th>
-        <th>Points</th>
         <th>Value</th>
         <th>Type</th>
     </tr>
@@ -21,7 +20,6 @@
     {% for ach in only1 %}
     <tr>
         <td><a href="achievement/{{ach.id}}">{{ach.name}}</a></td>
-        <td>{{ach.points}}</td>
         <td>
           {% ifequal ach.value 101 %}
             N/A
@@ -44,13 +42,12 @@
 </div>
 
 <div id="juggler2" style="float: left;">
-<h2>{{juggler2.name}} - {{juggler2.score}} points</h2>
+<h2>{{juggler2.name}} - {{juggler2.total_value|floatformat:2}} total value</h2>
 {% if only2 %}
 <table id="juggler-2" class="display">
   <thead>
     <tr>
         <th>Achievement</th>
-        <th>Points</th>
         <th>Value</th>
         <th>Type</th>
     </tr>
@@ -59,7 +56,6 @@
     {% for ach in only2 %}
     <tr>
         <td><a href="achievement/{{ach.id}}">{{ach.name}}</a></td>
-        <td>{{ach.points}}</td>
         <td>
           {% ifequal ach.value 101 %}
             N/A
@@ -88,8 +84,8 @@
     var tableSettings = {
       "bPaginate": false,
       "bFilter": false,
-      "aaSorting": [[ 2, "desc" ]],
-      "aoColumns": [{"sType": "html"}, null, {"sType": "numeric"}, null]
+      "aaSorting": [[ 1, "desc" ]],
+      "aoColumns": [{"sType": "html"}, {"sType": "numeric"}, null]
     };
     $('#juggler-1').dataTable(tableSettings);
     $('#juggler-2').dataTable(tableSettings);
