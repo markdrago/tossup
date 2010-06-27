@@ -6,7 +6,7 @@
 <h2>{{achievement.name}} - {{achievement.get_kind_display|title}} - {{achievement.points}} points - {{percent|floatformat:2}}% Achieved</h3>
 <div>
 {% ifnotequal achievement.notation|length 0 %}
-<applet archive="/juggletrack/site_media/JugglingLab/bin/JugglingLab.jar" code="JugglingLab" width=400 height=450>
+<applet archive="/juggletrack/site_media/JugglingLab/bin/JugglingLab.jar" code="JugglingLab" width=200 height=300>
 <param name="config" value="entry=none;view=simple" />
 <param name="notation" value="{{achievement.notation_type}}"/>
 <param name='pattern' value='
