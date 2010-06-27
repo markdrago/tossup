@@ -30,7 +30,7 @@ class Juggler(models.Model):
     def __unicode__(self):
         return self.name
     
-    def total_value(self):
+    def score(self):
         total = 0
         for ach in self.achievement.all():
             if ach.value() > 100:

@@ -2,10 +2,10 @@ from models import Juggler, Achievement, JugglerAchievement
 from django.contrib import admin
 
 class JugglerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'total_value')
+    list_display = ('name', 'score')
 
 class AchievementAdmin(admin.ModelAdmin):
-    list_display = ('name', 'kind')
+    list_display = ('name', 'kind', 'value')
 
 class JugglerAchievementAdmin(admin.ModelAdmin):
     list_display = ('juggler', 'achievement', 'date_created')

@@ -43,7 +43,7 @@ $().ready(function() {
 <tr>
 <th></th>
 <th>Name</th>
-<th>Total Value</th>
+<th>Score</th>
 </thead>
 <tbody>
 </tr>
@@ -51,7 +51,7 @@ $().ready(function() {
 <tr>
 <td><input type="checkbox" name="juggler" value="{{juggler.id}}" class="juggle_check" /></td>
 <td><a href="juggler/{{juggler.id}}/">{{ juggler.name }}</a></td>
-<td>{{juggler.total_value|floatformat:2}}</td>
+<td>{{juggler.score|floatformat:2}}</td>
 </tr>
 {% endfor %}
 </tbody>

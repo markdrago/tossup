@@ -3,7 +3,7 @@
 {% block title %} - {{juggler.name}}{% endblock %}
 
 {% block content %}
-<h2>{{juggler.name}} - {{juggler.total_value|floatformat:2}} total value</h2>
+<h2>{{juggler.name}} - Score: {{juggler.score|floatformat:2}}</h2>
 <h3>Achievements</h3>
 <form action="alter_achievements" method="post">
 <table id="achieved" class="display">

@@ -6,7 +6,7 @@
 <h2>Juggler Fight!</h2>
 <p>Each list shows the juggler's achievements which the other juggler has not achieved.</p>
 <div id="juggler1" style="float: left; padding-right: 20px;">
-<h2>{{juggler1.name}} - {{juggler1.total_value|floatformat:2}} total value</h2>
+<h2>{{juggler1.name}} - Score: {{juggler1.score|floatformat:2}}</h2>
 {% if only1 %}
 <table id="juggler-1" class="display">
   <thead>
@@ -42,7 +42,7 @@
 </div>
 
 <div id="juggler2" style="float: left;">
-<h2>{{juggler2.name}} - {{juggler2.total_value|floatformat:2}} total value</h2>
+<h2>{{juggler2.name}} - Score: {{juggler2.score|floatformat:2}}</h2>
 {% if only2 %}
 <table id="juggler-2" class="display">
   <thead>
