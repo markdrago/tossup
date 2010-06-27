@@ -16,6 +16,8 @@ class Achievement(models.Model):
 
     def __unicode__(self):
         return self.name
+    def __eventify__(self):
+        return 'There\'s a new achievement to be had: %s' % self.name
 
 class Juggler(models.Model):
     name = models.CharField(max_length=255)
@@ -24,7 +26,10 @@ class Juggler(models.Model):
     
     def __unicode__(self):
         return self.name
-    
+
+    def __eventify__(self):
+        return 'A new juggler joins our ranks: %s' % self.name
+
     def score(self):
         score = 0
         for ach in self.achievement.all():
@@ -38,4 +43,7 @@ class JugglerAchievement(models.Model):
     
     def __unicode__(self):
         return self.juggler.name + ": " + self.achievement.name
+
+    def __eventify__(self):
+        return '%s has achieved %s' % (self.juggler.name, self.achievement.name)
 

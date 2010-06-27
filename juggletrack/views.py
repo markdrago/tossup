@@ -91,3 +91,14 @@ def do_juggler_diff(juggler1, juggler2):
     only2 = [a for a in ach2 if a not in ach1]
     return (only1, only2)
 
+def dashboard(request):
+    def eventify(event):
+        return { 'created': event.date_created, 'description': event.__eventify__() }
+
+    recent_juggler_achievements = list(JugglerAchievement.objects.order_by('-date_created')[:5])
+    recent_added_achievements = list(Achievement.objects.order_by('-date_created')[:5])
+    recent_jugglers = list(Juggler.objects.order_by('-date_created')[:5])
+
+    recent_events = [eventify(e) for e in recent_juggler_achievements + recent_added_achievements + recent_jugglers]
+
+    return render_to_response('dashboard.html', {'events': recent_events})
