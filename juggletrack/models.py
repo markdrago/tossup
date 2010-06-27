@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 
 class Achievement(models.Model):
     KIND_CHOICES = (
@@ -16,8 +17,12 @@ class Achievement(models.Model):
 
     def __unicode__(self):
         return self.name
-    def __eventify__(self):
-        return 'There\'s a new achievement to be had: %s' % self.name
+
+    def eventify(self):
+        return 'There\'s a new achievement to be had: <a href="%s">%s</a>' % (self.view(), self.name)
+
+    def view(self):
+        return reverse('juggletrack.views.achievement', args=(self.id,))
 
 class Juggler(models.Model):
     name = models.CharField(max_length=255)
@@ -27,8 +32,11 @@ class Juggler(models.Model):
     def __unicode__(self):
         return self.name
 
-    def __eventify__(self):
-        return 'A new juggler joins our ranks: %s' % self.name
+    def eventify(self):
+        return 'A new juggler joins our ranks: <a href="%s">%s</a>' % (self.view(), self.name)
+
+    def view(self):
+        return reverse('juggletrack.views.juggler', args=(self.id,))
 
     def score(self):
         score = 0
@@ -44,6 +52,6 @@ class JugglerAchievement(models.Model):
     def __unicode__(self):
         return self.juggler.name + ": " + self.achievement.name
 
-    def __eventify__(self):
-        return '%s has achieved %s' % (self.juggler.name, self.achievement.name)
-
+    def eventify(self):
+        return '<a href="%s">%s</a> has achieved <a href="%s">%s</a>' % \
+                (self.juggler.view(), self.juggler.name, self.achievement.view(), self.achievement.name)

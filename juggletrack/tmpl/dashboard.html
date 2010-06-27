@@ -1,12 +1,26 @@
 {% extends "parent.html" %}
 
 {% block title %}Dashboard{% endblock %}
+{% block script %}
+<link rel="stylesheet" type="text/css" href="/juggletrack/site_media/css/dashboard.css" />
+{% endblock %}
 {% block content %}
-    <h2>Dashboard</h2>
-    {% for event in events %} 
-        {{event.created}}<br />
-        {{event.description}}<br />
-    {% endfor %}
+<h2 class="page-head">Dashboard</h2>
+    <div class="wrapper">
+        <div class="module recent-activity">
+        <h3 class="section-head">Recent Activity</h3>
+            <ol class="events">
+                {% for event in events %} 
+                <li class="event">
+                <span class="event-body">
+                    <span class="event-content">{{event.description|safe}}</span>
+                    <span class="event-meta">{{event.created|date}}</span>
+                </span>
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
 {% endblock %}
 
 {% block initjs %}

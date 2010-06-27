@@ -1,0 +1,51 @@
+body {
+    font: 0.75em 'Lucida Grande',sans-serif;
+    margin: 0;
+}
+
+div#header {
+    background-color: #36f;
+    margin: 0;
+    padding: 0;
+}
+div#header span#logo {
+    margin-left: 10px;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
+}
+div#nav ul li:hover {
+    background-color: #666;
+}
+div#nav ul li a:visited {
+    color: white;
+}
+div#nav {
+    margin: 0 auto;
+    padding-bottom: 3px;
+    text-align: center;
+    color: white;
+}
+div#nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+div#nav ul li {
+    display: inline;
+    font-size:13px;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-bottom: 3px;
+    padding-top: 3px;
+}
+
+div#nav ul li a {
+    text-decoration: none;
+}
+
+div#nav ul li.active a {
+    color: yellow;
+}
+

@@ -4,8 +4,11 @@ from django.core.urlresolvers import reverse
 from models import Juggler, Achievement, JugglerAchievement
 
 def index(request):
+    return HttpResponseRedirect(reverse('juggletrack.views.jugglers'))
+
+def jugglers(request):
     jugglers = list(Juggler.objects.all().order_by('name'))
-    return render_to_response('index.html', {'jugglers': jugglers})
+    return render_to_response('index.html', {'jugglers': jugglers, 'request':request})
 
 def achievement(request, achievement_id):
     ach = get_object_or_404(Achievement, pk=achievement_id)
@@ -13,7 +16,7 @@ def achievement(request, achievement_id):
     percent = achieved_percent(ach)
     return render_to_response('achievement.html', {'achievement': ach,
                                                    'jugglers': jugglers,
-                                                   'percent': percent})
+                                                   'percent': percent, 'request':request})
 
 def achievements(request):
     raw_achievements = Achievement.objects.all().order_by('points')
@@ -21,7 +24,8 @@ def achievements(request):
     for rawach in raw_achievements:
         achievements.append({"ach":rawach, "percent": achieved_percent(rawach)})
     
-    return render_to_response('achievements.html', {'achievements': achievements})
+    print(achievements)
+    return render_to_response('achievements.html', {'achievements': achievements, 'request':request})
 
 def achieved_percent(achievement):
     total_jugglers = Juggler.objects.all().count()    
@@ -53,7 +57,8 @@ def juggler(request, juggler_id):
                                                'achievements': achievements,
                                                'unachieved': unachieved,
                                                'achieved_points': achieved_points,
-                                               'unachieved_points': unachieved_points})
+                                               'unachieved_points': unachieved_points,
+                                               'request': request})
 
 def juggler_alter_ach(request, juggler_id):
     j = get_object_or_404(Juggler, pk=juggler_id)
@@ -79,6 +84,7 @@ def juggler_diff(request):
              'juggler2' : juggler2,
              'only1' : only1,
              'only2' : only2}
+    model['request'] = request
     return render_to_response('juggler_diff.html', model)
                                                     
     
@@ -93,7 +99,7 @@ def do_juggler_diff(juggler1, juggler2):
 
 def dashboard(request):
     def eventify(event):
-        return { 'created': event.date_created, 'description': event.__eventify__() }
+        return { 'created': event.date_created, 'description': event.eventify() }
 
     recent_juggler_achievements = list(JugglerAchievement.objects.order_by('-date_created')[:5])
     recent_added_achievements = list(Achievement.objects.order_by('-date_created')[:5])
@@ -101,4 +107,4 @@ def dashboard(request):
 
     recent_events = [eventify(e) for e in recent_juggler_achievements + recent_added_achievements + recent_jugglers]
 
-    return render_to_response('dashboard.html', {'events': recent_events})
+    return render_to_response('dashboard.html', {'events': recent_events, 'request':request})
