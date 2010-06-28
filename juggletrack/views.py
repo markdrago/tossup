@@ -2,10 +2,14 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from models import Juggler, Achievement, JugglerAchievement
+from tagging.models import Tag, TaggedItem
 
 def index(request):
+    return HttpResponseRedirect(reverse('juggletrack.views.jugglers'))
+
+def jugglers(request):
     jugglers = list(Juggler.objects.all().order_by('name'))
-    return render_to_response('index.html', {'jugglers': jugglers})
+    return render_to_response('index.html', {'jugglers': jugglers, 'request':request})
 
 def achievement(request, achievement_id):
     ach = get_object_or_404(Achievement, pk=achievement_id)
@@ -13,18 +17,27 @@ def achievement(request, achievement_id):
     percent = achieved_percent(ach)
     return render_to_response('achievement.html', {'achievement': ach,
                                                    'jugglers': jugglers,
-                                                   'percent': percent})
+                                                   'percent': percent, 
+                                                   'tags': ",".join([t.name for t in Tag.objects.get_for_object(ach)]),
+                                                   'request':request})
+
+def achievement_settags(request, achievement_id):
+    ach = get_object_or_404(Achievement, pk=achievement_id)
+    if 'tags' in request.POST:
+        Tag.objects.update_tags(ach, request.POST.get('tags'))
+    return HttpResponseRedirect(reverse('juggletrack.views.achievement', args=(achievement_id,)))
+
+def achievements_with_tag(request, tag_str):
+    tag = Tag.objects.get(name=tag_str)
+    raw_achievements = TaggedItem.objects.get_by_model(Achievement, tag)
+
+    return render_to_response('achievements_with_tag.html', {'tag': tag, 
+                                                            'achievements': _add_percent(raw_achievements),
+                                                            'request': request})
 
 def achievements(request):
     achievements = Achievement.objects.all()
-    return render_to_response('achievements.html', {'achievements': achievements})
-
-def achieved_percent(achievement):
-    total_jugglers = Juggler.objects.all().count()    
-    jas = JugglerAchievement.objects.filter(achievement=achievement).count()
-    if jas == 0:
-        return 0
-    return (float(jas) / float(total_jugglers)) * 100
+    return render_to_response('achievements.html', {'achievements': achievements, 'request': request})
 
 def juggler(request, juggler_id):
     juggler = get_object_or_404(Juggler, pk=juggler_id)
@@ -50,7 +63,8 @@ def juggler(request, juggler_id):
                                                'achievements': achievements,
                                                'unachieved': unachieved,
                                                'achieved_values': achieved_values,
-                                               'unachieved_values': unachieved_values})
+                                               'unachieved_values': unachieved_values,
+                                               'request': request})
 
 def juggler_alter_ach(request, juggler_id):
     j = get_object_or_404(Juggler, pk=juggler_id)
@@ -76,6 +90,7 @@ def juggler_diff(request):
              'juggler2' : juggler2,
              'only1' : only1,
              'only2' : only2}
+    model['request'] = request
     return render_to_response('juggler_diff.html', model)
                                                     
     
@@ -88,3 +103,14 @@ def do_juggler_diff(juggler1, juggler2):
     only2 = [a for a in ach2 if a not in ach1]
     return (only1, only2)
 
+def dashboard(request):
+    def eventify(event):
+        return { 'created': event.date_created, 'description': event.eventify() }
+
+    recent_juggler_achievements = list(JugglerAchievement.objects.order_by('-date_created')[:5])
+    recent_added_achievements = list(Achievement.objects.order_by('-date_created')[:5])
+    recent_jugglers = list(Juggler.objects.order_by('-date_created')[:5])
+
+    recent_events = [eventify(e) for e in recent_juggler_achievements + recent_added_achievements + recent_jugglers]
+
+    return render_to_response('dashboard.html', {'events': recent_events, 'request':request})

@@ -1,8 +1,11 @@
+{% load tags %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
 <title>Juggle Track {% block title %}{% endblock %}</title>
 <script type="text/javascript" src="/juggletrack/site_media/js/jquery.min.js"></script>
 <script type="text/javascript" src="/juggletrack/site_media/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/juggletrack/site_media/css/juggletrack.css" />
 <link rel="stylesheet" type="text/css" href="/juggletrack/site_media/css/table.css" />
 <style type="text/css">
 table {
@@ -22,6 +25,21 @@ input.submit_button {
 {% block script %}{% endblock %}
 </head>
 <body>
+<div id="header">
+<div id="top">
+    <span id="logo">JuggleTrack</span>
+</div>
+<div id="nav">
+    {% url juggletrack.views.dashboard as dashboard_url %}
+    {% url juggletrack.views.achievements as achievements_url %}
+    {% url juggletrack.views.jugglers as jugglers_url %}
+    <ul>
+        <li class="{% active request dashboard_url %}"><a href="{{dashboard_url}}">Dashboard</a></li>
+        <li class="{% active request achievements_url %}"><a href="{{achievements_url}}">Achievements</a></li>
+        <li class="{% active request jugglers_url %}"><a href="{{jugglers_url}}">Jugglers</a></li>
+    </ul>
+</div>
+</div>
 {% block content %}
 {% endblock %}
 </body>

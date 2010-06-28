@@ -1,10 +1,12 @@
 from django.conf.urls.defaults import *
+from django.http import HttpResponsePermanentRedirect
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    (r'^$', lambda request: HttpResponsePermanentRedirect('/juggletrack')),
     (r'^juggletrack/', include('tossup.juggletrack.urls')),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 

@@ -1,4 +1,7 @@
 from django.db import models
+from django.core.urlresolvers import reverse
+
+import tagging
 
 class Achievement(models.Model):
     KIND_CHOICES = (
@@ -22,6 +25,13 @@ class Achievement(models.Model):
         if achieved == 0: return 101
         return max(1, 100 - ((float(achieved - 1) / total) * 100))
 
+    def eventify(self):
+        return 'There\'s a new achievement to be had: <a href="%s">%s</a>' % (self.view(), self.name)
+
+    def view(self):
+        return reverse('juggletrack.views.achievement', args=(self.id,))
+
+
 class Juggler(models.Model):
     name = models.CharField(max_length=255)
     date_created = models.DateTimeField('date created')
@@ -29,7 +39,13 @@ class Juggler(models.Model):
     
     def __unicode__(self):
         return self.name
-    
+
+    def eventify(self):
+        return 'A new juggler joins our ranks: <a href="%s">%s</a>' % (self.view(), self.name)
+
+    def view(self):
+        return reverse('juggletrack.views.juggler', args=(self.id,))
+
     def score(self):
         total = 0
         for ach in self.achievement.all():
@@ -46,3 +62,6 @@ class JugglerAchievement(models.Model):
     def __unicode__(self):
         return self.juggler.name + ": " + self.achievement.name
 
+    def eventify(self):
+        return '<a href="%s">%s</a> has achieved <a href="%s">%s</a>' % \
+                (self.juggler.view(), self.juggler.name, self.achievement.view(), self.achievement.name)

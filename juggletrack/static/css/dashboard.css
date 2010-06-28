@@ -1,0 +1,71 @@
+body {
+    color: #333333;
+    font: 0.75em 'Lucida Grande',sans-serif;
+}
+
+div.module {
+    padding: 0 10px;
+    clear: both;
+    float: none;
+}
+
+div.wrapper {
+    width: 424px;
+}
+
+div.wrapper {
+    background-color: #acf;
+    padding: 8px;
+}
+
+div.wrapper div.section-head {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    border-bottom: 1px solid;
+}
+
+h2.page-head {
+    font-size: 18px;
+}
+
+ol.events {
+    list-style: none outside none;
+    font-size: 14px;
+    padding-left: 0.5em;
+}
+
+ol.events li.event {
+    border-bottom: 1px solid #eeeeee;
+    padding-left: 0.5em;
+}
+
+ol.events span.event-body {
+    display: block;
+    width: 375px;
+}
+
+ol.events span.event-body .event-meta {
+    display: block;
+    height: auto;
+    color: #999999;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+ol.events span.event-body .event-content {
+    
+}
+
+div.module a {
+    text-decoration: none;
+}
+
+div.module a:visited {
+    color: blue;
+}
+
+div.module a:hover {
+    color: #36f;
+}
+

@@ -17,7 +17,7 @@
 </table>
 <div>
 {% ifnotequal achievement.notation|length 0 %}
-<applet archive="/juggletrack/site_media/JugglingLab/bin/JugglingLab.jar" code="JugglingLab" width=400 height=450>
+<applet archive="/juggletrack/site_media/JugglingLab/bin/JugglingLab.jar" code="JugglingLab" width=200 height=300>
 <param name="config" value="entry=none;view=simple" />
 <param name="notation" value="{{achievement.notation_type}}"/>
 <param name='pattern' value='
@@ -28,6 +28,11 @@ Java not available
 </applet>
 {% endifnotequal %}
 </div>
+<h3>Tags</h3>
+<form action="{% url juggletrack.views.achievement_settags achievement.id %}" method="post">
+        <input name="tags" type="text" value="{{tags}}" />
+        <input type="submit" value="Set Tags" />
+    </form>
 <h3>Jugglers</h3>
 {% if jugglers %}
 <table id="jugglers" class="display">
