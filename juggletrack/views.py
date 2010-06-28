@@ -109,6 +109,6 @@ def dashboard(request):
     recent_added_achievements = list(Achievement.objects.order_by('-date_created')[:5])
     recent_jugglers = list(Juggler.objects.order_by('-date_created')[:5])
 
-    recent_events = [eventify(e) for e in recent_juggler_achievements + recent_added_achievements + recent_jugglers]
+    recent_events = reversed(sorted([eventify(e) for e in recent_juggler_achievements + recent_added_achievements + recent_jugglers], key=lambda e: e['created']))
 
     return render_to_response('dashboard.html', {'events': recent_events, 'request':request})
