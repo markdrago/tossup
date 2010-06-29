@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from models import Juggler, Achievement, JugglerAchievement
+from models import Juggler, Achievement, JugglerAchievement, AchievementEvent, AchievementValueLog, JugglerScoreLog
 from tagging.models import Tag, TaggedItem
 
 def index(request):
@@ -71,13 +71,45 @@ def juggler_alter_ach(request, juggler_id):
             ach = get_object_or_404(Achievement, pk=ach_to_add)
             ja = JugglerAchievement(juggler=j, achievement=ach)
             ja.save()
+            fully_record_achievement_event(j, ach, True)
     if 'remove' in request.POST:
         for ach_to_rm in request.POST.getlist('remove'):
             ach = get_object_or_404(Achievement, pk=ach_to_rm)
             jaset = JugglerAchievement.objects.filter(juggler=j, achievement=ach)
             jaset[0].delete()
+            fully_record_achievement_event(j, ach, False)
             
     return HttpResponseRedirect(reverse('juggletrack.views.juggler', args=(j.id,)))
+
+def fully_record_achievement_event(juggler, achievement, isAdd):
+    event = log_achievement_event(juggler, achievement, isAdd)
+    log_achievement_value(event)
+    log_juggler_scores(event)
+
+def log_achievement_event(juggler, achievement, isAdd):
+    kind = isAdd and "ADD" or "REMOVE"
+    event = AchievementEvent(juggler=juggler, achievement=achievement, kind=kind)
+    event.save()
+    return event
+
+def log_achievement_value(event):
+    value = event.achievement.value()
+    if value == 101:
+        value = None
+    log = AchievementValueLog(achievement=event.achievement,
+                              event=event, value=value,
+                              date_created=event.date_created)
+    log.save()
+
+def log_juggler_scores(event):
+    jugglers = JugglerAchievement.objects.filter(achievement=event.achievement)
+    if event.juggler not in jugglers:
+        jugglers.append(event.juggler)
+    for ja in jugglers:
+        j = ja.juggler
+        log = JugglerScoreLog(juggler=j, event=event, score=j.score(),
+                              date_created=event.date_created)
+        log.save()
 
 def juggler_diff(request):
     juggler_ids = request.GET.getlist('juggler')

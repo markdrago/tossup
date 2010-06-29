@@ -65,3 +65,36 @@ class JugglerAchievement(models.Model):
     def eventify(self):
         return '<a href="%s">%s</a> has achieved <a href="%s">%s</a>' % \
                 (self.juggler.view(), self.juggler.name, self.achievement.view(), self.achievement.name)
+
+class AchievementEvent(models.Model):
+    KIND_CHOICES = (
+        ('ADD', 'Added'),
+        ('REMOVE', 'Removed')
+    )
+    
+    juggler = models.ForeignKey(Juggler)
+    achievement = models.ForeignKey(Achievement)
+    kind = models.CharField(max_length=255, choices=KIND_CHOICES)
+    date_created = models.DateTimeField('date', auto_now_add=True)
+    
+    def __unicode__(self):
+        return self.juggler.name + " " + self.get_kind_display().lower() + " " + self.achievement.name
+
+class AchievementValueLog(models.Model):
+    achievement = models.ForeignKey(Achievement)
+    event = models.ForeignKey(AchievementEvent)
+    value = models.FloatField(null=True)
+    date_created = models.DateTimeField('date')
+    
+    def __unicode__(self):
+        return self.achievement.name + " was worth: " + self.value + " at " + self.date_created
+
+class JugglerScoreLog(models.Model):
+    juggler = models.ForeignKey(Juggler)
+    event = models.ForeignKey(AchievementEvent)
+    score = models.FloatField()
+    date_created = models.DateTimeField('date')
+    
+    def __unicode__(self):
+        return self.juggler.name + " had " + self.score + " points at " + self.date_created
+
