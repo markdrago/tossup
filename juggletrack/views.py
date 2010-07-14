@@ -102,11 +102,11 @@ def log_achievement_value(event):
     log.save()
 
 def log_juggler_scores(event):
-    jugglers = JugglerAchievement.objects.filter(achievement=event.achievement)
+    jas = list(JugglerAchievement.objects.filter(achievement=event.achievement))
+    jugglers = map(lambda x: x.juggler, jas)
     if event.juggler not in jugglers:
         jugglers.append(event.juggler)
-    for ja in jugglers:
-        j = ja.juggler
+    for j in jugglers:
         log = JugglerScoreLog(juggler=j, event=event, score=j.score(),
                               date_created=event.date_created)
         log.save()
