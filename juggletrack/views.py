@@ -1,6 +1,8 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.db import models
+from datetime import datetime
 from models import Juggler, Achievement, JugglerAchievement, AchievementEvent, AchievementValueLog, JugglerScoreLog
 from tagging.models import Tag, TaggedItem
 
@@ -82,31 +84,54 @@ def juggler_alter_ach(request, juggler_id):
     return HttpResponseRedirect(reverse('juggletrack.views.juggler', args=(j.id,)))
 
 def fully_record_achievement_event(juggler, achievement, isAdd):
+    #if the 1st achievement is being added (or the last achievement is being
+    #removed) for this juggler we need to log a new value for EVERY achievement
+    #(that has been achieved at least twice) and EVERY juggler (with at least
+    #one achievement) because the total number of jugglers has changed and
+    #that is used in the value calculation
+    log_all = False
+    if ((isAdd and juggler.achievement.count() == 1) or
+        ((not isAdd) and juggler.achievement.count() == 0)):
+        log_all = True
+
     event = log_achievement_event(juggler, achievement, isAdd)
-    log_achievement_value(event)
-    log_juggler_scores(event)
+    log_achievement_values(event, log_all)
+    log_juggler_scores(event, log_all)
 
 def log_achievement_event(juggler, achievement, isAdd):
     kind = isAdd and "ADD" or "REMOVE"
-    event = AchievementEvent(juggler=juggler, achievement=achievement, kind=kind)
+    event = AchievementEvent(juggler=juggler, achievement=achievement,
+                             kind=kind, date_created=datetime.today())
     event.save()
     return event
 
-def log_achievement_value(event):
-    value = event.achievement.value()
-    if value == 101:
-        value = None
-    log = AchievementValueLog(achievement=event.achievement,
-                              event=event, value=value,
-                              date_created=event.date_created)
-    log.save()
+def log_achievement_values(event, log_all):
+    affected = []
+    if log_all:
+        affected = list(Achievement.objects.annotate(num_j=models.Count('juggler')).filter(num_j__gt=1))
+    
+    if event.achievement not in affected:
+        affected.append(event.achievement)
 
-def log_juggler_scores(event):
-    jas = list(JugglerAchievement.objects.filter(achievement=event.achievement))
-    jugglers = map(lambda x: x.juggler, jas)
-    if event.juggler not in jugglers:
-        jugglers.append(event.juggler)
-    for j in jugglers:
+    for a in affected:
+        value = a.value()
+        if value == 101:
+            value = None
+        log = AchievementValueLog(achievement=a, event=event, value=value,
+                                  date_created=event.date_created)
+        log.save()
+
+def log_juggler_scores(event, log_all):
+    if log_all:
+        affected = list(Juggler.objects.annotate(num_ach=models.Count('achievement')).filter(num_ach__gt=0))
+    else:
+        jas = list(JugglerAchievement.objects.filter(achievement=event.achievement))
+        affected = map(lambda x: x.juggler, jas)
+    
+    if event.juggler not in affected:
+        affected.append(event.juggler)
+
+    for j in affected:
         log = JugglerScoreLog(juggler=j, event=event, score=j.score(),
                               date_created=event.date_created)
         log.save()
@@ -123,7 +148,6 @@ def juggler_diff(request):
     model['request'] = request
     return render_to_response('juggler_diff.html', model)
                                                     
-    
 def do_juggler_diff(juggler1, juggler2):
     ja1 = JugglerAchievement.objects.filter(juggler=juggler1)
     ja2 = JugglerAchievement.objects.filter(juggler=juggler2)

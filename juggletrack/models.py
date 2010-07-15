@@ -75,7 +75,7 @@ class AchievementEvent(models.Model):
     juggler = models.ForeignKey(Juggler)
     achievement = models.ForeignKey(Achievement)
     kind = models.CharField(max_length=255, choices=KIND_CHOICES)
-    date_created = models.DateTimeField('date', auto_now_add=True)
+    date_created = models.DateTimeField('date')
     
     def __unicode__(self):
         return self.juggler.name + " " + self.get_kind_display().lower() + " " + self.achievement.name
