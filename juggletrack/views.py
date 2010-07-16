@@ -189,7 +189,6 @@ def juggler_score_chart_data(request, juggler_id):
             prevlogday = day
             data[len(data)-1][1] = log.score
             continue
-        prevlogday = day
         logtime = timegm(log.date_created.timetuple()) * 1000
         data.append([logtime, log.score])
     
@@ -210,11 +209,35 @@ def achievement_value_chart_data(request, achievement_id):
     for log in logs:
         day = log.date_created.date()
         if (day == prevlogday):
-            prevlogday = day
             data[len(data)-1][1] = log.value
             continue
         prevlogday = day
         logtime = timegm(log.date_created.timetuple()) * 1000
         data.append([logtime, log.value])
+    
+    return HttpResponse(json.dumps(data))
+
+def jugglers_overall_score_chart_data(request):
+#    if not request.is_ajax():
+#        return Http404
+    if request.method != 'GET':
+        return Http404
+
+    #only include the last score log per day
+    data = []
+    logs = JugglerScoreLog.objects.all().order_by('date_created')
+
+    prevlogday = None
+    daymap = {}
+    for log in logs:
+        day = log.date_created.date()
+        daymap[log.juggler.id] = log.score
+        daytotal = sum(daymap.values())
+        if (day == prevlogday):
+            data[len(data)-1][1] = daytotal
+            continue
+        prevlogday = day
+        logtime = timegm(log.date_created.timetuple()) * 1000
+        data.append([logtime, daytotal])
     
     return HttpResponse(json.dumps(data))
