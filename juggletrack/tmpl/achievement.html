@@ -15,7 +15,7 @@
   {% endifequal %}
 </td></tr>
 </table>
-<div>
+<div style="float: left">
 {% ifnotequal achievement.notation|length 0 %}
 <applet archive="/juggletrack/site_media/JugglingLab/bin/JugglingLab.jar" code="JugglingLab" width=200 height=300>
 <param name="config" value="entry=none;view=simple" />
@@ -28,6 +28,8 @@ Java not available
 </applet>
 {% endifnotequal %}
 </div>
+<div id="value_vs_time_chart" style="width:300px; height:200px; float: left;"></div>
+<div style="clear: both;"></div>
 <h3>Tags</h3>
 <form action="{% url juggletrack.views.achievement_settags achievement.id %}" method="post">
         <input name="tags" type="text" value="{{tags}}" />
@@ -63,5 +65,26 @@ Java not available
     "aaSorting": [[ 1, "desc" ]],
     "bFilter": false,
   });
+  
+  //draw chart
+  var options = {
+    lines: { show: true },
+    points: { show: true },
+    xaxis: { mode: 'time'}
+  };
+  var data = [];
+  var chartdiv = $("#value_vs_time_chart");
+    
+  var onDataReceived = function(series) {
+    data.push(series);
+    $.plot(chartdiv, data, options);
+  };
+        
+  $.ajax({
+    url: 'value_chart_data',
+    method: 'GET',
+    dataType: 'json',
+    success: onDataReceived
+  }); 
 </script>
 {% endblock %}

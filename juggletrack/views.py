@@ -172,8 +172,8 @@ def dashboard(request):
     return render_to_response('dashboard.html', {'events': recent_events, 'request':request})
     
 def juggler_score_chart_data(request, juggler_id):
-    #if not request.is_ajax():
-    #    return Http404
+    if not request.is_ajax():
+        return Http404
     if request.method != 'GET':
         return Http404
 
@@ -192,5 +192,29 @@ def juggler_score_chart_data(request, juggler_id):
         prevlogday = day
         logtime = timegm(log.date_created.timetuple()) * 1000
         data.append([logtime, log.score])
+    
+    return HttpResponse(json.dumps(data))
+
+def achievement_value_chart_data(request, achievement_id):
+    if not request.is_ajax():
+        return Http404
+    if request.method != 'GET':
+        return Http404
+
+    ach = get_object_or_404(Achievement, pk=achievement_id)
+    
+    #only include the last score log per day
+    data = []
+    logs = AchievementValueLog.objects.filter(achievement=ach).order_by('date_created')
+    prevlogday = None
+    for log in logs:
+        day = log.date_created.date()
+        if (day == prevlogday):
+            prevlogday = day
+            data[len(data)-1][1] = log.value
+            continue
+        prevlogday = day
+        logtime = timegm(log.date_created.timetuple()) * 1000
+        data.append([logtime, log.value])
     
     return HttpResponse(json.dumps(data))
