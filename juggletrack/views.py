@@ -1,10 +1,12 @@
 from django.shortcuts import get_object_or_404, render_to_response
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.core.urlresolvers import reverse
 from django.db import models
 from datetime import datetime
 from models import Juggler, Achievement, JugglerAchievement, AchievementEvent, AchievementValueLog, JugglerScoreLog
 from tagging.models import Tag, TaggedItem
+import json
+from calendar import timegm
 
 def index(request):
     return HttpResponseRedirect(reverse('juggletrack.views.jugglers'))
@@ -168,3 +170,27 @@ def dashboard(request):
     recent_events = reversed(sorted([eventify(e) for e in recent_juggler_achievements + recent_added_achievements + recent_jugglers], key=lambda e: e['created']))
 
     return render_to_response('dashboard.html', {'events': recent_events, 'request':request})
+    
+def juggler_score_chart_data(request, juggler_id):
+    #if not request.is_ajax():
+    #    return Http404
+    if request.method != 'GET':
+        return Http404
+
+    juggler = get_object_or_404(Juggler, pk=juggler_id)
+    
+    #only include the last score log per day
+    data = []
+    logs = JugglerScoreLog.objects.filter(juggler=juggler).order_by('date_created')
+    prevlogday = None
+    for log in logs:
+        day = log.date_created.date()
+        if (day == prevlogday):
+            prevlogday = day
+            data[len(data)-1][1] = log.score
+            continue
+        prevlogday = day
+        logtime = timegm(log.date_created.timetuple()) * 1000
+        data.append([logtime, log.score])
+    
+    return HttpResponse(json.dumps(data))
