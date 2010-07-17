@@ -1,2 +1,4 @@
 *.pyc
 tossup.db
+*.swp
+*.bak

@@ -22,7 +22,6 @@
 <param name="notation" value="{{achievement.notation_type}}"/>
 <param name='pattern' value='
 {{achievement.notation}}
-
 '/>
 Java not available
 </applet>
@@ -47,7 +46,7 @@ Java not available
   <tbody>
     {% for j in jugglers %}
     <tr>
-        <td><a href="../../juggler/{{j.juggler.idu}}">{{j.juggler.name}}</a></td>
+        <td><a href="/juggletrack/juggler/{{j.juggler.id}}">{{j.juggler.name}}</a></td>
         <td>{{j.date_created|date:"M d, Y @ H:i"}}</td>
     </tr>
     {% endfor %}
