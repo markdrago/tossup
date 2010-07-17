@@ -113,20 +113,22 @@ $(document).ready(function() {
     });
     $("#" + table.attr('id') + "_filter").before($('<label></label>').html('Show Achievements with Value: ').append(valueFilter));
   });
-  
   //draw chart
   var options = {
     lines: { show: true },
     points: { show: true },
     xaxis: { mode: 'time'},
-    yaxis: { min: 0 }
+    yaxis: { min: 0 },
+    grid: { hoverable: true }
   };
   var data = [];
   var chartdiv = $("#score_vs_time_chart");
     
+
   var onDataReceived = function(series) {
-    data.push(series);
-    $.plot(chartdiv, data, options);
+      data = [series.data];
+      bindTooltip(chartdiv, series.info);
+      $.plot(chartdiv, data, options);
   };
         
   $.ajax({

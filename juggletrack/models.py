@@ -89,6 +89,9 @@ class AchievementValueLog(models.Model):
     def __unicode__(self):
         return self.achievement.name + " was worth: " + self.value + " at " + self.date_created
 
+    def datapoint(self):
+        return self.value
+
 class JugglerScoreLog(models.Model):
     juggler = models.ForeignKey(Juggler)
     event = models.ForeignKey(AchievementEvent)
@@ -98,3 +101,5 @@ class JugglerScoreLog(models.Model):
     def __unicode__(self):
         return self.juggler.name + " had " + self.score + " points at " + self.date_created
 
+    def datapoint(self):
+        return self.score

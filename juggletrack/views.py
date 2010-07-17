@@ -175,19 +175,6 @@ def juggler_diff_chart_data(request):
     
     return HttpResponse(json.dumps([data1, data2]))
 
-def changelog_data(dataset):
-    data = []
-    prevlogday = None
-    for log in dataset:
-        day = log.date_created.date()
-        if (day == prevlogday):
-            prevlogday = day
-            data[len(data)-1][1] = log.score
-            continue
-        prevlogday = day
-        logtime = timegm(log.date_created.timetuple()) * 1000
-        data.append([logtime, log.score])
-    return data 
 
 def dashboard(request):
     def eventify(event):
@@ -210,20 +197,38 @@ def juggler_score_chart_data(request, juggler_id):
     juggler = get_object_or_404(Juggler, pk=juggler_id)
     
     #only include the last score log per day
+    logs = changelog_data(JugglerScoreLog.objects.filter(juggler=juggler).order_by('date_created'))
+    events = eventlog_data(JugglerScoreLog.objects.filter(juggler=juggler).order_by('date_created'))
+
+    return HttpResponse(json.dumps({'info': events, 'data': logs}))
+
+def eventlog_data(dataset):
     data = []
-    logs = JugglerScoreLog.objects.filter(juggler=juggler).order_by('date_created')
     prevlogday = None
-    for log in logs:
+    for log in dataset:
         day = log.date_created.date()
-        if (day == prevlogday):
+        if(day == prevlogday):
             prevlogday = day
-            data[len(data)-1][1] = log.score
+            data[-1][1] += '<br />' + str(log.event)
             continue
         prevlogday = day
         logtime = timegm(log.date_created.timetuple()) * 1000
-        data.append([logtime, log.score])
-    
-    return HttpResponse(json.dumps(data))
+        data.append([logtime, str(log.event)])
+    return data
+
+def changelog_data(dataset):
+    data = []
+    prevlogday = None
+    for log in dataset:
+        day = log.date_created.date()
+        if (day == prevlogday):
+            prevlogday = day
+            data[len(data)-1][1] = log.datapoint()
+            continue
+        prevlogday = day
+        logtime = timegm(log.date_created.timetuple()) * 1000
+        data.append([logtime, log.datapoint()])
+    return data 
 
 def achievement_value_chart_data(request, achievement_id):
     if not request.is_ajax():
@@ -234,17 +239,7 @@ def achievement_value_chart_data(request, achievement_id):
     ach = get_object_or_404(Achievement, pk=achievement_id)
     
     #only include the last score log per day
-    data = []
-    logs = AchievementValueLog.objects.filter(achievement=ach).order_by('date_created')
-    prevlogday = None
-    for log in logs:
-        day = log.date_created.date()
-        if (day == prevlogday):
-            prevlogday = day
-            data[len(data)-1][1] = log.value
-            continue
-        prevlogday = day
-        logtime = timegm(log.date_created.timetuple()) * 1000
-        data.append([logtime, log.value])
+    logs = changelog_data(AchievementValueLog.objects.filter(achievement=ach).order_by('date_created'))
+    events = eventlog_data(AchievementValueLog.objects.filter(achievement=ach).order_by('date_created'))
     
-    return HttpResponse(json.dumps(data))
+    return HttpResponse(json.dumps({'info': events, 'data': logs}))

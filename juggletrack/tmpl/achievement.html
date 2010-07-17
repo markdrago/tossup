@@ -70,13 +70,15 @@ Java not available
     lines: { show: true },
     points: { show: true },
     xaxis: { mode: 'time'},
-    yaxis: { min: 0 }
+    yaxis: { min: 0 },
+    grid: { hoverable: true }
   };
   var data = [];
   var chartdiv = $("#value_vs_time_chart");
     
   var onDataReceived = function(series) {
-    data.push(series);
+    data = [series.data];
+    bindTooltip(chartdiv, series.info);
     $.plot(chartdiv, data, options);
   };
         
