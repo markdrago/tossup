@@ -78,7 +78,7 @@ Java not available
     
   var onDataReceived = function(series) {
     data = [series.data];
-    bindTooltip(chartdiv, series.info);
+    bindTooltip(chartdiv, [series.info]);
     $.plot(chartdiv, data, options);
   };
         

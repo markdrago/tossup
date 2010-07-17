@@ -101,16 +101,16 @@
       lines: { show: true },
       points: { show: true },
       xaxis: { mode: 'time'},
-      yaxis: { min: 0 }
+      yaxis: { min: 0 },
+      grid: { hoverable: true }
     };
     var data = [];
     var chartdiv = $("#diff_vs_time_chart");
     
 
     var onDataReceived = function(series) {
-      //$.plot(chartdiv, [[[0,1],[1,2],[2,3]],[[0,10],[1,9],[2,0]]]);
-      //$.plot(chartdiv, [[[1275516851000, 300.0], [1275667364000, 700.0], [1275906131000, 583.33333333333337]], [[1275516851000, 300.0], [1275667364000, 700.0], [1275906131000, 583.33333333333337], [1276013279000, 566.66666666666674]]], options);
-      $.plot(chartdiv, series, options);
+      bindTooltip(chartdiv, series.info)
+      $.plot(chartdiv, series.data, options);
     };
          
     $.ajax({

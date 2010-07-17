@@ -172,8 +172,11 @@ def juggler_diff_chart_data(request):
     #only include the last score log per day
     data1 = {'label': juggler1.name, 'data': changelog_data(JugglerScoreLog.objects.filter(juggler=juggler1).order_by('date_created'))}
     data2 = {'label': juggler2.name, 'data': changelog_data(JugglerScoreLog.objects.filter(juggler=juggler2).order_by('date_created'))}
+
+    event1 = eventlog_data(JugglerScoreLog.objects.filter(juggler=juggler1).order_by('date_created'))
+    event2 = eventlog_data(JugglerScoreLog.objects.filter(juggler=juggler2).order_by('date_created'))
     
-    return HttpResponse(json.dumps([data1, data2]))
+    return HttpResponse(json.dumps({'info': [event1, event2], 'data': [data1, data2]}))
 
 
 def dashboard(request):

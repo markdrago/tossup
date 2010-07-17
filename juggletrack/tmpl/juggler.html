@@ -124,10 +124,9 @@ $(document).ready(function() {
   var data = [];
   var chartdiv = $("#score_vs_time_chart");
     
-
   var onDataReceived = function(series) {
       data = [series.data];
-      bindTooltip(chartdiv, series.info);
+      bindTooltip(chartdiv, [series.info]);
       $.plot(chartdiv, data, options);
   };
         

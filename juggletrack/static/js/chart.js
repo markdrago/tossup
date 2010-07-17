@@ -17,7 +17,7 @@ function bindTooltip(chart, info) {
     chart.bind("plothover", function (event, pos, item) {
         if (item) {
             if (previousPoint != item.datapoint) {
-                curInfo = info[item.dataIndex];
+                curInfo = info[item.seriesIndex][item.dataIndex];
 
                 previousPoint = item.datapoint;
                 
