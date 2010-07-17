@@ -5,6 +5,11 @@
 {% block content %}
 <h2>Juggler Fight!</h2>
 <p>Each list shows the juggler's achievements which the other juggler has not achieved.</p>
+<div>
+<div id="diff_vs_time_chart" style="width:600px;height:300px;float:left"></div>
+<div id="chart_legend"></div>
+</div>
+<div style="clear:both"></div>
 <div id="juggler1" style="float: left; padding-right: 20px;">
 <h2>{{juggler1.name}} - Score: {{juggler1.score|floatformat:2}}</h2>
 {% if only1 %}
@@ -55,14 +60,14 @@
   <tbody>
     {% for ach in only2 %}
     <tr>
-        <td><a href="achievement/{{ach.id}}">{{ach.name}}</a></td>
+        <td><a href="/juggletrack/achievement/{{ach.id}}">{{ach.name}}</a></td>
         <td>
           {% ifequal ach.value 101 %}
             N/A
           {% else %}
             {{ach.value|floatformat:2}}
           {% endifequal %}
-        </td>>
+        </td>
         <td>{{ach.get_kind_display|title}}</td>
     </tr>
     {% endfor %}
@@ -89,6 +94,33 @@
     };
     $('#juggler-1').dataTable(tableSettings);
     $('#juggler-2').dataTable(tableSettings);
+
+    //draw chart
+    var options = {
+      legend: { show: true, container: $('#chart_legend') },
+      lines: { show: true },
+      points: { show: true },
+      xaxis: { mode: 'time'},
+      yaxis: { min: 0 }
+    };
+    var data = [];
+    var chartdiv = $("#diff_vs_time_chart");
+    
+
+    var onDataReceived = function(series) {
+      //$.plot(chartdiv, [[[0,1],[1,2],[2,3]],[[0,10],[1,9],[2,0]]]);
+      //$.plot(chartdiv, [[[1275516851000, 300.0], [1275667364000, 700.0], [1275906131000, 583.33333333333337]], [[1275516851000, 300.0], [1275667364000, 700.0], [1275906131000, 583.33333333333337], [1276013279000, 566.66666666666674]]], options);
+      $.plot(chartdiv, series, options);
+    };
+         
+    $.ajax({
+      url: 'diff_chart_data',
+      method: 'GET',
+      data: 'juggler={{juggler1.id}}&juggler={{juggler2.id}}',
+      dataType: 'json',
+      success: onDataReceived
+    }); 
+
   });
 </script>
 {% endblock %}

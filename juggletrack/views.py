@@ -159,6 +159,36 @@ def do_juggler_diff(juggler1, juggler2):
     only2 = [a for a in ach2 if a not in ach1]
     return (only1, only2)
 
+def juggler_diff_chart_data(request):
+    if not request.is_ajax():
+        return Http404
+    if request.method != 'GET':
+        return Http404
+
+    juggler_ids = request.GET.getlist('juggler')
+    juggler1 = get_object_or_404(Juggler, pk=juggler_ids[0])
+    juggler2 = get_object_or_404(Juggler, pk=juggler_ids[1])
+
+    #only include the last score log per day
+    data1 = {'label': juggler1.name, 'data': changelog_data(JugglerScoreLog.objects.filter(juggler=juggler1).order_by('date_created'))}
+    data2 = {'label': juggler2.name, 'data': changelog_data(JugglerScoreLog.objects.filter(juggler=juggler2).order_by('date_created'))}
+    
+    return HttpResponse(json.dumps([data1, data2]))
+
+def changelog_data(dataset):
+    data = []
+    prevlogday = None
+    for log in dataset:
+        day = log.date_created.date()
+        if (day == prevlogday):
+            prevlogday = day
+            data[len(data)-1][1] = log.score
+            continue
+        prevlogday = day
+        logtime = timegm(log.date_created.timetuple()) * 1000
+        data.append([logtime, log.score])
+    return data 
+
 def dashboard(request):
     def eventify(event):
         return { 'created': event.date_created, 'description': event.eventify() }
