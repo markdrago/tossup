@@ -31,10 +31,17 @@ class Achievement(models.Model):
     def view(self):
         return reverse('juggletrack.views.achievement', args=(self.id,))
 
+class JugglerAffiliation(models.Model):
+    name = models.CharField(max_length=255)
+    date_created = models.DateTimeField('date created')
+
+    def __unicode__(self):
+        return self.name
 
 class Juggler(models.Model):
     name = models.CharField(max_length=255)
     date_created = models.DateTimeField('date created')
+    affiliation = models.ForeignKey(JugglerAffiliation)
     achievement = models.ManyToManyField(Achievement, through='JugglerAchievement')
     
     def __unicode__(self):

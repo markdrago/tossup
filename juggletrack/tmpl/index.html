@@ -28,7 +28,7 @@ $().ready(function() {
   $('#jugglers').dataTable({
     "bPaginate": false,
     "aaSorting": [[ 2, "desc" ]],
-    "aoColumns": [null, {"sType": "html"}, null]
+    "aoColumns": [null, {"sType": "html"}, null, null]
   });
   $('.juggle_check').click(force_two_checked);
 });
@@ -44,6 +44,7 @@ $().ready(function() {
 <th></th>
 <th>Name</th>
 <th>Score</th>
+<th>Affiliation</th>
 </thead>
 <tbody>
 </tr>
@@ -52,6 +53,7 @@ $().ready(function() {
 <td><input type="checkbox" name="juggler" value="{{juggler.id}}" class="juggle_check" /></td>
 <td><a href="juggler/{{juggler.id}}/">{{ juggler.name }}</a></td>
 <td>{{juggler.score|floatformat:2}}</td>
+<td>{{juggler.affiliation.name}}</td>
 </tr>
 {% endfor %}
 </tbody>
