@@ -186,9 +186,9 @@ def juggler_score_chart_data(request, juggler_id):
     for log in logs:
         day = log.date_created.date()
         if (day == prevlogday):
-            prevlogday = day
             data[len(data)-1][1] = log.score
             continue
+        prevlogday = day
         logtime = timegm(log.date_created.timetuple()) * 1000
         data.append([logtime, log.score])
     
