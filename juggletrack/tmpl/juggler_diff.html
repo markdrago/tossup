@@ -4,6 +4,7 @@
 
 {% block content %}
 <h2>Juggler Fight!</h2>
+<div id="score_vs_time_chart" style="width:300px; height:200px;"></div>
 <p>Each list shows the juggler's achievements which the other juggler has not achieved.</p>
 <div>
 <div id="diff_vs_time_chart" style="width:600px;height:300px;float:left"></div>
@@ -121,6 +122,37 @@
       success: onDataReceived
     }); 
 
+  });
+  
+  //draw chart
+  var options = {
+    lines: { show: true },
+    points: { show: true },
+    xaxis: { mode: 'time'},
+    legend: { position: 'nw' },
+  };
+  var data = [];
+  var chartdiv = $("#score_vs_time_chart");
+    
+  var onDataReceived = function(label) {
+    return function(series) {
+        data.push({label: label, data: series});
+        $.plot(chartdiv, data, options);
+    };
+  };
+        
+  $.ajax({
+    url: 'juggler/{{juggler1.id}}/score_chart_data',
+    method: 'GET',
+    dataType: 'json',
+    success: onDataReceived('{{juggler1.name}}')
+  });
+  
+  $.ajax({
+    url: 'juggler/{{juggler2.id}}/score_chart_data',
+    method: 'GET',
+    dataType: 'json',
+    success: onDataReceived('{{juggler2.name}}')
   });
 </script>
 {% endblock %}

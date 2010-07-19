@@ -3,7 +3,8 @@ import os
 
 urlpatterns = patterns('juggletrack.views',
     (r'^$', 'index'),
-    (r'^jugglers', 'jugglers'),
+    (r'^jugglers$', 'jugglers'),
+    (r'^jugglers/overall_score_chart_data', 'jugglers_overall_score_chart_data'),
     (r'^juggler/(?P<juggler_id>\d+)/$', 'juggler'),
     (r'^juggler/(?P<juggler_id>\d+)/alter_achievements$', 'juggler_alter_ach'),
     (r'^juggler/(?P<juggler_id>\d+)/score_chart_data$', 'juggler_score_chart_data'),

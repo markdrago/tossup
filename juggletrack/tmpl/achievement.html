@@ -46,7 +46,11 @@ Java not available
   <tbody>
     {% for j in jugglers %}
     <tr>
+<<<<<<< HEAD
         <td><a href="/juggletrack/juggler/{{j.juggler.id}}">{{j.juggler.name}}</a></td>
+=======
+        <td><a href="../../juggler/{{j.juggler.id}}">{{j.juggler.name}}</a></td>
+>>>>>>> 27ee62168443b253d5e818ac921900e9fcf878a6
         <td>{{j.date_created|date:"M d, Y @ H:i"}}</td>
     </tr>
     {% endfor %}
@@ -70,8 +74,12 @@ Java not available
     lines: { show: true },
     points: { show: true },
     xaxis: { mode: 'time'},
+<<<<<<< HEAD
     yaxis: { min: 0 },
     grid: { hoverable: true }
+=======
+    yaxis: {min: 0, max: 100},
+>>>>>>> 27ee62168443b253d5e818ac921900e9fcf878a6
   };
   var data = [];
   var chartdiv = $("#value_vs_time_chart");
