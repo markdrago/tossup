@@ -41,7 +41,7 @@ class JugglerAffiliation(models.Model):
 class Juggler(models.Model):
     name = models.CharField(max_length=255)
     date_created = models.DateTimeField('date created')
-    affiliation = models.ForeignKey(JugglerAffiliation)
+    affiliation = models.ForeignKey(JugglerAffiliation, null=True)
     achievement = models.ManyToManyField(Achievement, through='JugglerAchievement')
     
     def __unicode__(self):
