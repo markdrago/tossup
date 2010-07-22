@@ -2,7 +2,7 @@ from models import Juggler, Achievement, JugglerAchievement, JugglerAffiliation
 from django.contrib import admin
 
 class JugglerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'score')
+    list_display = ('get_name', 'score')
 
 class AchievementAdmin(admin.ModelAdmin):
     list_display = ('name', 'kind', 'value')
