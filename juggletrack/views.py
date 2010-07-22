@@ -327,6 +327,11 @@ def register(request, juggler_id=None):
     else:
         juggler = user.get_profile()
 
+    #log the juggler in to their account
+    user = authenticate(username=email, password=password)    
+    login(request, user)
+
+    #redirect the juggler to their page
     return HttpResponseRedirect(juggler.view())
 
 def login_view(request):
