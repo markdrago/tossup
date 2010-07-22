@@ -18,6 +18,8 @@ urlpatterns = patterns('juggletrack.views',
     (r'^dashboard', 'dashboard'),
     (r'^register$', 'register'),
     (r'^register/(?P<juggler_id>\d+)/$', 'register'),
+    (r'^login$', 'login_view'),
+    (r'^logout$', 'logout_view'),
 )
 urlpatterns += patterns('',
     (r'^site_media/(?P<path>.*)$',

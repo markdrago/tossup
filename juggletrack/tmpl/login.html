@@ -1,0 +1,18 @@
+{% extends "parent.html" %}
+
+{% block title %} - Login{% endblock %}
+
+{% block initjs %}
+{% endblock %}
+
+{% block content %}
+<h3>Login</h3>
+<form method="post">
+  <ul>
+  <li>Email: <input type="text" name="email" /></li>
+  <li>Password: <input type="password" name="password" /></li>
+  </ul>
+  <input type="submit" id="submit_button" class="submit_button" value="Login" />
+</form>
+{% endblock %}
+

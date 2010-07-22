@@ -1,19 +1,19 @@
 {% extends "parent.html" %}
 
-{% block title %} - {{juggler.name}}{% endblock %}
+{% block title %} - {{juggler.get_name}}{% endblock %}
 
 {% block content %}
 <h2>{{juggler.get_name}} - Score: {{juggler.score|floatformat:2}}</h2>
-{% if not has_user_account %}
+{% if not has_user_account and not request.user.is_authenticated %}
 <h3><a href="../../register/{{juggler.id}}">Claim this Juggler Account</a></h3>
 {% endif %}
 <div id="score_vs_time_chart" style="width:300px; height:200px;"></div>
 <h3>Achievements</h3>
-<form action="alter_achievements" method="post">
+{% if editable %}<form action="alter_achievements" method="post">{% endif %}
 <table id="achieved" class="display">
   <thead>
     <tr>
-        <th>Remove?</th>
+        {% if editable %}<th>Remove?</th>{% endif %}
         <th>Achievement</th>
         <th>Value</th>
         <th>Type</th>
@@ -23,7 +23,7 @@
   <tbody>
     {% for ach in achievements %}
     <tr>
-        <td><input type="checkbox" name="remove" value="{{ach.achievement.id}}" /></td>
+        {% if editable %}<td><input type="checkbox" name="remove" value="{{ach.achievement.id}}" /></td>{% endif %}
         <td><a href="../../achievement/{{ach.achievement.id}}">{{ach.achievement.name}}</a></td>
         <td class="value">{{ach.achievement.value|floatformat:2}}</td>
         <td>{{ach.achievement.get_kind_display|title}}</td>
@@ -37,7 +37,7 @@
     <table id="unachieved" class="display">
       <thead>
         <tr>
-            <th>Add?</th>
+            {% if editable %}<th>Add?</th>{% endif %}
             <th>Achievement</th>
             <th>Value</th>
             <th>Type</th>
@@ -46,7 +46,7 @@
       <tbody>
         {% for unach in unachieved %}
         <tr>
-            <td><input type="checkbox" name="add" value="{{ unach.id }}" /></td>
+            {% if editable %}<td><input type="checkbox" name="add" value="{{ unach.id }}" /></td>{% endif %}
             <td><a href="../../achievement/{{unach.id}}">{{unach.name}}</a></td>
             <td class="value">{{unach.value|floatformat:2}}</td>
             <td>{{unach.get_kind_display|title}}</td>
@@ -55,8 +55,10 @@
       </tbody>
     </table>
     <br />
+{% if editable %}
     <input class="submit_button" type="submit" value="Submit" />
 </form>
+{% endif %}
 {% endblock %}
 
 {% block initjs %}
@@ -68,23 +70,31 @@ $(document).ready(function() {
     return obj.aData[2];
   }
 
+  {% if editable %}
+  var defaultsort = 2;
+  var cols = [null];
+  {% else %}
+  var defaultsort = 1;
+  var cols = [];
+  {% endif %}
+
   var t1 = $('#achieved').dataTable({
     "bPaginate": false,
-    "aaSorting": [[ 2, "asc" ]],
-    "aoColumns": [null, {"sType": "html"},
+    "aaSorting": [[ defaultsort, "asc" ]],
+    "aoColumns": cols.concat([{"sType": "html"},
             {"sType": "numeric",
              "fnRender": renderNAs,
              "bUseRendered": false},
-             null, null]
+             null, null])
   });
   var t2 = $('#unachieved').dataTable({
     "bPaginate": false,
-    "aaSorting": [[ 2, "asc" ]],
-    "aoColumns": [null, {"sType": "html"},
+    "aaSorting": [[ defaultsort, "asc" ]],
+    "aoColumns": cols.concat([{"sType": "html"},
             {"sType": "numeric",
              "fnRender": renderNAs,
              "bUseRendered": false},
-             null]
+             null])
   });
 
   $.map([t1, t2], function(table) {

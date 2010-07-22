@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404, render_to_response
-from django.http import HttpResponseRedirect, Http404, HttpResponse
+from django.http import HttpResponseRedirect, Http404, HttpResponse, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from datetime import datetime
 from models import Juggler, Achievement, JugglerAchievement, AchievementEvent, AchievementValueLog, JugglerScoreLog
@@ -66,16 +67,26 @@ def juggler(request, juggler_id):
     if juggler.user is not None:
         has_user_account = True
 
+    #decide if this user should see the controls to change their achievements
+    editable = False
+    if request.user.is_authenticated() and request.user == juggler.user:
+        editable = True
+
     return render_to_response('juggler.html', {'juggler': juggler,
                                                'achievements': achievements,
                                                'unachieved': unachieved,
                                                'achieved_values': achieved_values,
                                                'unachieved_values': unachieved_values,
                                                'has_user_account': has_user_account,
+                                               'editable': editable,                                               
                                                'request': request})
 
 def juggler_alter_ach(request, juggler_id):
     j = get_object_or_404(Juggler, pk=juggler_id)
+    
+    if not request.user.is_authenticated() or request.user != j.user:
+        return HttpResponseForbidden()
+    
     if 'add' in request.POST:
         for ach_to_add in request.POST.getlist('add'):
             ach = get_object_or_404(Achievement, pk=ach_to_add)
@@ -253,8 +264,8 @@ def achievement_value_chart_data(request, achievement_id):
     return HttpResponse(json.dumps({'info': events, 'data': logs}))
 
 def jugglers_overall_score_chart_data(request):
-#    if not request.is_ajax():
-#        return Http404
+    if not request.is_ajax():
+        return Http404
     if request.method != 'GET':
         return Http404
 
@@ -317,4 +328,31 @@ def register(request, juggler_id=None):
         juggler = user.get_profile()
 
     return HttpResponseRedirect(juggler.view())
+
+def login_view(request):
+    if request.method == 'GET':
+        context = {'request':request}
+        return render_to_response('login.html', context)
+
+    #authenticate and login user
+    errormsg = None
+    email = request.POST['email']
+    password = request.POST['password']
+    user = authenticate(username=email, password=password)
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            juggler = user.get_profile()
+            return HttpResponseRedirect(juggler.view())
+        else:
+            errormsg = "Your account is not active."
+    else:
+        errormsg = "Unable to authenticate.  Maybe you mistyped your password."
+    
+    context = {'request': request, 'errormsg': errormsg}
+    return render_to_response('login.html', context)
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('juggletrack.views.jugglers'))
 

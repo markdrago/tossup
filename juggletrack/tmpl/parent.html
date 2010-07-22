@@ -23,18 +23,50 @@ h3 {
 input.submit_button {
   margin-top: 10px;
 }
+div#right {
+  float: right;
+}
+div#top {
+  float: left;
+}
+div#header {
+  padding-bottom: 5px;
+}
+div#nav {
+  padding-top: 10px;
+}
+div#header,
+div#header a,
+div#header a:hover,
+div#header a:visited,
+div#header a:active {
+  color: white;
+}
 </style>
 {% block script %}{% endblock %}
 </head>
 <body>
+
+{% url juggletrack.views.dashboard as dashboard_url %}
+{% url juggletrack.views.achievements as achievements_url %}
+{% url juggletrack.views.jugglers as jugglers_url %}
+{% url juggletrack.views.login_view as login_url %}
+{% url juggletrack.views.logout_view as logout_url %}
+{% url juggletrack.views.register as register_url %}
+{% url juggletrack.views.juggler juggler_id=request.user.get_profile.id as juggler_url %}
+
 <div id="header">
 <div id="top">
     <span id="logo">JuggleTrack</span>
 </div>
+<div id="right">
+    {% if request.user.is_authenticated %}
+    Logged in as: <a href="{{juggler_url}}">{{request.user.get_full_name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="{{logout_url}}">Logout</a>
+    {% else %}
+    <a href="{{login_url}}">Login</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="{{register_url}}">Register</a>
+    {% endif %}
+</div>
 <div id="nav">
-    {% url juggletrack.views.dashboard as dashboard_url %}
-    {% url juggletrack.views.achievements as achievements_url %}
-    {% url juggletrack.views.jugglers as jugglers_url %}
     <ul>
         <li class="{% active request dashboard_url %}"><a href="{{dashboard_url}}">Dashboard</a></li>
         <li class="{% active request achievements_url %}"><a href="{{achievements_url}}">Achievements</a></li>

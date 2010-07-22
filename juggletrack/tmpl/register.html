@@ -1,0 +1,24 @@
+{% extends "parent.html" %}
+
+{% block title %} - Juggler Registration{% endblock %}
+
+{% block initjs %}
+{% endblock %}
+
+{% block content %}
+<h3>Register</h3>
+<form method="post">
+  {% if juggler_id %}
+    <input type="hidden" name="juggler_id" value="{{juggler_id}}" />
+  {% endif %}
+  
+  <ul>
+  <li>First Name: <input type="text" name="first" /></li>
+  <li>Last Name: <input type="text" name="last" /></li>
+  <li>Email: <input type="text" name="email" /></li>
+  <li>Password: <input type="password" name="password" /></li>
+  </ul>
+  <input type="submit" id="submit_button" class="submit_button" value="Register" />
+</form>
+{% endblock %}
+
