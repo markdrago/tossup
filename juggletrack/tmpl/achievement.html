@@ -46,7 +46,7 @@ Java not available
   <tbody>
     {% for j in jugglers %}
     <tr>
-        <td><a href="/juggletrack/juggler/{{j.juggler.id}}">{{j.juggler.name}}</a></td>
+        <td><a href="/juggletrack/juggler/{{j.juggler.id}}">{{j.juggler.get_name}}</a></td>
         <td>{{j.date_created|date:"M d, Y @ H:i"}}</td>
     </tr>
     {% endfor %}

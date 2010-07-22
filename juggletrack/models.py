@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from datetime import datetime
 import tagging
 
 class Achievement(models.Model):
@@ -39,16 +41,32 @@ class JugglerAffiliation(models.Model):
         return self.name
 
 class Juggler(models.Model):
-    name = models.CharField(max_length=255)
-    date_created = models.DateTimeField('date created')
+    user = models.ForeignKey(User, unique=True, null=True)
     affiliation = models.ForeignKey(JugglerAffiliation, null=True)
     achievement = models.ManyToManyField(Achievement, through='JugglerAchievement')
+
+    #following fields are no longer used and should be removed once
+    #all existing user accounts have been claimed
+    name = models.CharField(max_length=255, blank=True)
+    date_created = models.DateTimeField('date created', null=True)
+    
+    def get_name(self):
+        if self.user is not None:
+            return self.user.get_full_name()
+        else:
+            return self.name
+    
+    def get_date_created(self):
+        if self.user is not None:
+            return self.user.date_joined
+        else:
+            return self.date_created
     
     def __unicode__(self):
-        return self.name
+        return self.get_name()
 
     def eventify(self):
-        return 'A new juggler joins our ranks: <a href="%s">%s</a>' % (self.view(), self.name)
+        return 'A new juggler joins our ranks: <a href="%s">%s</a>' % (self.view(), self.get_name())
 
     def view(self):
         return reverse('juggletrack.views.juggler', args=(self.id,))
@@ -61,17 +79,28 @@ class Juggler(models.Model):
             total += ach.value()
         return total
 
+#register for signal sent when a user is created to create the juggler object
+def user_saved_handler(sender, **kwargs):
+    if kwargs['created'] is not True:
+        return
+        
+    user = kwargs['instance']
+    if Juggler.objects.filter(user=user).count() == 0:
+        juggler = Juggler(user=user, date_created=user.date_joined)
+        juggler.save()
+post_save.connect(user_saved_handler, sender=User)
+
 class JugglerAchievement(models.Model):
     juggler = models.ForeignKey(Juggler)
     achievement = models.ForeignKey(Achievement)
     date_created = models.DateTimeField('date achieved', auto_now_add=True)
     
     def __unicode__(self):
-        return self.juggler.name + ": " + self.achievement.name
+        return self.juggler.get_name() + ": " + self.achievement.name
 
     def eventify(self):
         return '<a href="%s">%s</a> has achieved <a href="%s">%s</a>' % \
-                (self.juggler.view(), self.juggler.name, self.achievement.view(), self.achievement.name)
+                (self.juggler.view(), self.juggler.get_name(), self.achievement.view(), self.achievement.name)
 
 class AchievementEvent(models.Model):
     KIND_CHOICES = (
@@ -85,7 +114,7 @@ class AchievementEvent(models.Model):
     date_created = models.DateTimeField('date')
     
     def __unicode__(self):
-        return self.juggler.name + " " + self.get_kind_display().lower() + " " + self.achievement.name
+        return self.juggler.get_name() + " " + self.get_kind_display().lower() + " " + self.achievement.name
 
 class AchievementValueLog(models.Model):
     achievement = models.ForeignKey(Achievement)
@@ -106,7 +135,7 @@ class JugglerScoreLog(models.Model):
     date_created = models.DateTimeField('date')
     
     def __unicode__(self):
-        return self.juggler.name + " had " + self.score + " points at " + self.date_created
+        return self.juggler.get_name() + " had " + self.score + " points at " + self.date_created
 
     def datapoint(self):
         return self.score

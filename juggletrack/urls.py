@@ -16,6 +16,8 @@ urlpatterns = patterns('juggletrack.views',
     (r'^achievements/tag/(?P<tag_str>\S+)', 'achievements_with_tag'),
     (r'^achievements', 'achievements'),
     (r'^dashboard', 'dashboard'),
+    (r'^register$', 'register'),
+    (r'^register/(?P<juggler_id>\d+)/$', 'register'),
 )
 urlpatterns += patterns('',
     (r'^site_media/(?P<path>.*)$',

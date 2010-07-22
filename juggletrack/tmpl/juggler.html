@@ -3,7 +3,10 @@
 {% block title %} - {{juggler.name}}{% endblock %}
 
 {% block content %}
-<h2>{{juggler.name}} - Score: {{juggler.score|floatformat:2}}</h2>
+<h2>{{juggler.get_name}} - Score: {{juggler.score|floatformat:2}}</h2>
+{% if not has_user_account %}
+<h3><a href="../../register/{{juggler.id}}">Claim this Juggler Account</a></h3>
+{% endif %}
 <div id="score_vs_time_chart" style="width:300px; height:200px;"></div>
 <h3>Achievements</h3>
 <form action="alter_achievements" method="post">

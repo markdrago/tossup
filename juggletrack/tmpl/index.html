@@ -61,6 +61,7 @@ $().ready(function() {
 <h4 style="margin-left: auto;margin-right: auto; width: 300px; text-align: center; padding-bottom: 0px;">Overall Score Total vs. Time</h4>
 <div id="overall_score_vs_time_chart" style="width:800px;height:200px;margin-left:auto;margin-right:auto;"></div>
 <form action="juggler_diff" method="get">
+<a href="register">Register</a>
 <table id="jugglers" class="display">
 <thead>
 <tr>
@@ -74,7 +75,7 @@ $().ready(function() {
 {% for juggler in jugglers %}
 <tr>
 <td><input type="checkbox" name="juggler" value="{{juggler.id}}" class="juggle_check" /></td>
-<td><a href="juggler/{{juggler.id}}/">{{ juggler.name }}</a></td>
+<td><a href="juggler/{{juggler.id}}/">{{ juggler.get_name }}</a></td>
 <td>{{juggler.score|floatformat:2}}</td>
 <td>{{juggler.affiliation.name}}</td>
 </tr>

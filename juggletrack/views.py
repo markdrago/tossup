@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.contrib.auth.models import User
 from datetime import datetime
 from models import Juggler, Achievement, JugglerAchievement, AchievementEvent, AchievementValueLog, JugglerScoreLog
 from tagging.models import Tag, TaggedItem
@@ -12,7 +13,7 @@ def index(request):
     return HttpResponseRedirect(reverse('juggletrack.views.jugglers'))
 
 def jugglers(request):
-    jugglers = list(Juggler.objects.all().order_by('name'))
+    jugglers = list(Juggler.objects.all())
     return render_to_response('index.html', {'jugglers': jugglers, 'request':request})
 
 def achievement(request, achievement_id):
@@ -60,12 +61,17 @@ def juggler(request, juggler_id):
     for values in all_unachieved_values:
         if values not in unachieved_values:
             unachieved_values.append(values)
-            
+
+    has_user_account = False
+    if juggler.user is not None:
+        has_user_account = True
+
     return render_to_response('juggler.html', {'juggler': juggler,
                                                'achievements': achievements,
                                                'unachieved': unachieved,
                                                'achieved_values': achieved_values,
                                                'unachieved_values': unachieved_values,
+                                               'has_user_account': has_user_account,
                                                'request': request})
 
 def juggler_alter_ach(request, juggler_id):
@@ -170,8 +176,8 @@ def juggler_diff_chart_data(request):
     juggler2 = get_object_or_404(Juggler, pk=juggler_ids[1])
 
     #only include the last score log per day
-    data1 = {'label': juggler1.name, 'data': changelog_data(JugglerScoreLog.objects.filter(juggler=juggler1).order_by('date_created'))}
-    data2 = {'label': juggler2.name, 'data': changelog_data(JugglerScoreLog.objects.filter(juggler=juggler2).order_by('date_created'))}
+    data1 = {'label': juggler1.get_name(), 'data': changelog_data(JugglerScoreLog.objects.filter(juggler=juggler1).order_by('date_created'))}
+    data2 = {'label': juggler2.get_name(), 'data': changelog_data(JugglerScoreLog.objects.filter(juggler=juggler2).order_by('date_created'))}
 
     event1 = eventlog_data(JugglerScoreLog.objects.filter(juggler=juggler1).order_by('date_created'))
     event2 = eventlog_data(JugglerScoreLog.objects.filter(juggler=juggler2).order_by('date_created'))
@@ -270,3 +276,45 @@ def jugglers_overall_score_chart_data(request):
         data.append([logtime, daytotal])
     
     return HttpResponse(json.dumps(data))
+
+def register(request, juggler_id=None):
+    if request.method == 'GET':
+        context = {'request':request, 'juggler_id':juggler_id}
+        return render_to_response('register.html', context)
+
+    juggler = None
+    if 'juggler_id' in request.POST:
+        juggler = get_object_or_404(Juggler, pk=request.POST['juggler_id'])
+    
+    first = request.POST['first']
+    last = request.POST['last']
+    email = request.POST['email']
+    password = request.POST['password']
+    
+    user = User.objects.create_user(email, email, password)
+    user.first_name = first
+    user.last_name = last
+    user.save()
+    
+    #if there is a juggler account being claimed, delete the juggler that
+    #was just created, unite the existing juggler account with the user,
+    #and set the date created for the user account from the existing juggler
+    if juggler is not None:
+        #detach defunct juggler from user account
+        dead_juggler = user.get_profile()
+        dead_juggler.user = None
+        dead_juggler.save()
+        #attach existing juggler object to user
+        juggler.user = user
+        juggler.name = ''
+        juggler.save()
+        #copy date created from juggler object to user
+        user.date_joined = juggler.date_created
+        user.save()
+        #delete defunct juggler object
+        dead_juggler.delete()
+    else:
+        juggler = user.get_profile()
+
+    return HttpResponseRedirect(juggler.view())
+

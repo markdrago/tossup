@@ -86,3 +86,5 @@ INSTALLED_APPS = (
 )
 
 FORCE_LOWERCASE_TAGS = True
+AUTH_PROFILE_MODULE = 'juggletrack.Juggler'
+

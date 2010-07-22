@@ -1,6 +1,6 @@
 {% extends "parent.html" %}
 
-{% block title %} - {{juggler1.name}} vs. {{juggler2.name}}{% endblock %}
+{% block title %} - {{juggler1.get_name}} vs. {{juggler2.get_name}}{% endblock %}
 
 {% block content %}
 <h2>Juggler Fight!</h2>
@@ -11,7 +11,7 @@
 </div>
 <div style="clear:both"></div>
 <div id="juggler1" style="float: left; padding-right: 20px;">
-<h2>{{juggler1.name}} - Score: {{juggler1.score|floatformat:2}}</h2>
+<h2>{{juggler1.get_name}} - Score: {{juggler1.score|floatformat:2}}</h2>
 {% if only1 %}
 <table id="juggler-1" class="display">
   <thead>
@@ -39,15 +39,15 @@
 </table>
 {% else %}
   {% if juggler1.score %}
-    All of {{juggler1.name}}'s achievements<br />have been achieved by {{juggler2.name}}.
+    All of {{juggler1.get_name}}'s achievements<br />have been achieved by {{juggler2.get_name}}.
   {% else %}
-    {{juggler1.name}} does not have any achievements.
+    {{juggler1.get_name}} does not have any achievements.
   {% endif %}
 {% endif %}
 </div>
 
 <div id="juggler2" style="float: left;">
-<h2>{{juggler2.name}} - Score: {{juggler2.score|floatformat:2}}</h2>
+<h2>{{juggler2.get_name}} - Score: {{juggler2.score|floatformat:2}}</h2>
 {% if only2 %}
 <table id="juggler-2" class="display">
   <thead>
@@ -75,9 +75,9 @@
 </table>
 {% else %}
     {% if juggler2.score %}
-        All of {{juggler2.name}}'s achievements<br />have been achieved by {{juggler1.name}}
+        All of {{juggler2.get_name}}'s achievements<br />have been achieved by {{juggler1.get_name}}
     {% else %}
-        {{juggler2.name}} does not have any achievements.
+        {{juggler2.get_name}} does not have any achievements.
     {% endif %}
 {% endif %}
 </div>
@@ -144,14 +144,14 @@
     url: 'juggler/{{juggler1.id}}/score_chart_data',
     method: 'GET',
     dataType: 'json',
-    success: onDataReceived('{{juggler1.name}}')
+    success: onDataReceived('{{juggler1.get_name}}')
   });
   
   $.ajax({
     url: 'juggler/{{juggler2.id}}/score_chart_data',
     method: 'GET',
     dataType: 'json',
-    success: onDataReceived('{{juggler2.name}}')
+    success: onDataReceived('{{juggler2.get_name}}')
   });
 </script>
 {% endblock %}
