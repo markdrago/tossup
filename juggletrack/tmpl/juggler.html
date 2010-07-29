@@ -64,23 +64,23 @@
 {% block initjs %}
 <script type="text/javascript">
 $(document).ready(function() {
-  var renderNAs = function(obj) {
-    if (obj.aData[2] == "101.00")
-      return "N/A";
-    return obj.aData[2];
-  }
-
   {% if editable %}
-  var defaultsort = 2;
+  var value_column = 2;
   var cols = [null];
   {% else %}
-  var defaultsort = 1;
+  var value_column = 1;
   var cols = [];
   {% endif %}
 
+  var renderNAs = function(obj) {
+    if (obj.aData[value_column] == "101.00")
+      return "N/A";
+    return obj.aData[value_column];
+  }
+
   var t1 = $('#achieved').dataTable({
     "bPaginate": false,
-    "aaSorting": [[ defaultsort, "asc" ]],
+    "aaSorting": [[ value_column, "asc" ]],
     "aoColumns": cols.concat([{"sType": "html"},
             {"sType": "numeric",
              "fnRender": renderNAs,
@@ -89,7 +89,7 @@ $(document).ready(function() {
   });
   var t2 = $('#unachieved').dataTable({
     "bPaginate": false,
-    "aaSorting": [[ defaultsort, "asc" ]],
+    "aaSorting": [[ value_column, "asc" ]],
     "aoColumns": cols.concat([{"sType": "html"},
             {"sType": "numeric",
              "fnRender": renderNAs,
