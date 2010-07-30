@@ -3,6 +3,11 @@
 {% block title %} - All Achievements{% endblock %}
 
 {% block content %}
+{% if request.user.is_authenticated %}
+<br />
+<a href="{% url juggletrack.views.achievement_add %}">Add an Achievement</a>
+{% endif %}
+
 {% block heading %}<h2>All Achievements</h2>{% endblock %}
 
 <table id="achievements" class="display">

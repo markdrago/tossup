@@ -43,6 +43,46 @@ def achievements(request):
     achievements = Achievement.objects.all()
     return render_to_response('achievements.html', {'achievements': achievements, 'request': request})
 
+def achievement_add(request, achievement_id=None):
+    if not request.user.is_authenticated():
+        return HttpResponseForbidden()
+
+    if request.method != 'POST':
+        context = None
+        attrs = ('id', 'name', 'kind', 'notation_type', 'notation')
+        if achievement_id is None:
+            context = dict([(attr, '') for attr in attrs])
+            context['tags'] = ''
+        else:
+            ach = get_object_or_404(Achievement, pk=achievement_id)
+            context = dict([(attr, getattr(ach, attr)) for attr in attrs])
+            context['tags'] = ",".join([t.name for t in Tag.objects.get_for_object(ach)])
+
+        context['request'] = request
+        return render_to_response('achievement_add.html', context)
+    
+    name = request.POST['name']
+    kind = request.POST['kind']
+    tags = request.POST['tags']
+    notation_type = request.POST['notation_type']
+    notation = request.POST['notation']
+    created_by = request.user.get_profile()
+    
+    if achievement_id is None:
+        ach = Achievement(name=name, kind=kind, notation_type=notation_type,
+                          notation=notation, date_created=datetime.today(),
+                          created_by=created_by)
+    else:
+        ach = get_object_or_404(Achievement, pk=achievement_id)
+        ach.name = name
+        ach.kind = kind
+        ach.notation_type = notation_type
+        ach.notation = notation
+    ach.save()
+    Tag.objects.update_tags(ach, tags)
+    
+    return HttpResponseRedirect(reverse('juggletrack.views.achievement', args=(ach.id,)))
+
 def juggler(request, juggler_id):
     juggler = get_object_or_404(Juggler, pk=juggler_id)
     achievements = list(JugglerAchievement.objects.filter(juggler=juggler))
