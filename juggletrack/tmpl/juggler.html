@@ -8,12 +8,38 @@
 <h3><a href="../../register/{{juggler.id}}">Claim this Juggler Account</a></h3>
 {% endif %}
 <div id="score_vs_time_chart" style="width:300px; height:200px;"></div>
-<h3>Achievements</h3>
 {% if editable %}<form action="alter_achievements" method="post">{% endif %}
+<h3>Challengeable Achievements</h3>
+<table id="challengeable" class="display">
+  <thead>
+    <tr>
+        <th>Achievement</th>
+        <th>Value</th>
+        <th>Type</th>
+        <th>Date Achieved</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ach in challengeable %}
+    <tr>
+        <td><a href="../../achievement/{{ach.achievement.id}}">{{ach.achievement.name}}</a></td>
+        <td class="value">{{ach.achievement.value|floatformat:2}}</td>
+        <td>{{ach.achievement.get_kind_display|title}}</td>
+        <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<br /> 
+{% if editable %}
+    <input class="submit_button" type="submit" value="Submit" />
+{% endif %}
+<h3>Achievements</h3>
 <table id="achieved" class="display">
   <thead>
     <tr>
         {% if editable %}<th>Remove?</th>{% endif %}
+        {% if editable %}<th>Challenge?</th>{% endif %}
         <th>Achievement</th>
         <th>Value</th>
         <th>Type</th>
@@ -24,6 +50,7 @@
     {% for ach in achievements %}
     <tr>
         {% if editable %}<td><input type="checkbox" name="remove" value="{{ach.achievement.id}}" /></td>{% endif %}
+        {% if editable %}<td><input type="checkbox" name="challenge" value="{{ach.achievement.id}}" /></td>{% endif %}
         <td><a href="../../achievement/{{ach.achievement.id}}">{{ach.achievement.name}}</a></td>
         <td class="value">{{ach.achievement.value|floatformat:2}}</td>
         <td>{{ach.achievement.get_kind_display|title}}</td>
@@ -32,7 +59,10 @@
     {% endfor %}
   </tbody>
 </table>
-<br />
+<br /> 
+{% if editable %}
+    <input class="submit_button" type="submit" value="Submit" />
+{% endif %}
 <h3>Achievements Not Yet Achieved</h3>
     <table id="unachieved" class="display">
       <thead>
@@ -71,17 +101,26 @@ $(document).ready(function() {
   }
 
   {% if editable %}
-  var defaultsort = 2;
-  var cols = [null];
+  var defaultsort = [1, 3, 2];
+  var cols = [[], [null, null], [null]];
   {% else %}
-  var defaultsort = 1;
-  var cols = [];
+  var defaultsort = [1, 1, 1];
+  var cols = [[], [], []];
   {% endif %}
 
+  var t0 = $('#challengeable').dataTable({
+    "bPaginate": false,
+    "aaSorting": [[ defaultsort[0], "asc" ]],
+    "aoColumns": cols[0].concat([{"sType": "html"},
+            {"sType": "numeric",
+             "fnRender": renderNAs,
+             "bUseRendered": false},
+             null, null])
+  });
   var t1 = $('#achieved').dataTable({
     "bPaginate": false,
-    "aaSorting": [[ defaultsort, "asc" ]],
-    "aoColumns": cols.concat([{"sType": "html"},
+    "aaSorting": [[ defaultsort[1], "asc" ]],
+    "aoColumns": cols[1].concat([{"sType": "html"},
             {"sType": "numeric",
              "fnRender": renderNAs,
              "bUseRendered": false},
@@ -89,8 +128,8 @@ $(document).ready(function() {
   });
   var t2 = $('#unachieved').dataTable({
     "bPaginate": false,
-    "aaSorting": [[ defaultsort, "asc" ]],
-    "aoColumns": cols.concat([{"sType": "html"},
+    "aaSorting": [[ defaultsort[2], "asc" ]],
+    "aoColumns": cols[2].concat([{"sType": "html"},
             {"sType": "numeric",
              "fnRender": renderNAs,
              "bUseRendered": false},

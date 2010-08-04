@@ -45,8 +45,11 @@ def achievements(request):
 
 def juggler(request, juggler_id):
     juggler = get_object_or_404(Juggler, pk=juggler_id)
-    achievements = list(JugglerAchievement.objects.filter(juggler=juggler))
+    all = JugglerAchievement.objects.filter(juggler=juggler)
+    achievements = list(all.filter(challengeable_since__isnull=True))
+    challengeable = list(all.filter(challengeable_since__isnull=False))
     achievements.sort(cmp=lambda x,y: cmp(x.achievement.value(), y.achievement.value()))
+    challengeable.sort(cmp=lambda x,y: cmp(x.achievement.value(), y.achievement.value()))
     all_achievements = Achievement.objects.all()
     raw_ach = [x.achievement for x in achievements]
     unachieved = [x for x in all_achievements if x not in raw_ach]
@@ -56,6 +59,7 @@ def juggler(request, juggler_id):
     all_unachieved_values = [x.value() for x in unachieved]
     achieved_values = []
     unachieved_values = []
+    challengeable_values = []
     for values in all_achieved_values:
         if values not in achieved_values:
             achieved_values.append(values)
@@ -74,6 +78,7 @@ def juggler(request, juggler_id):
 
     return render_to_response('juggler.html', {'juggler': juggler,
                                                'achievements': achievements,
+                                               'challengeable': challengeable,
                                                'unachieved': unachieved,
                                                'achieved_values': achieved_values,
                                                'unachieved_values': unachieved_values,
@@ -92,33 +97,40 @@ def juggler_alter_ach(request, juggler_id):
             ach = get_object_or_404(Achievement, pk=ach_to_add)
             ja = JugglerAchievement(juggler=j, achievement=ach)
             ja.save()
-            fully_record_achievement_event(j, ach, True)
+            fully_record_achievement_event(j, ach, 'ADD')
+    if 'challenge' in request.POST:
+        for ach_to_challenge in request.POST.getlist('challenge'):
+            ach = get_object_or_404(Achievement, pk=ach_to_challenge)
+            ja = JugglerAchievement.objects.filter(juggler=j, achievement=ach)[0]
+            ja.challengeable_since = datetime.today()
+            ja.save()
+            fully_record_achievement_event(j, ach, 'CHALLENGE')
     if 'remove' in request.POST:
         for ach_to_rm in request.POST.getlist('remove'):
             ach = get_object_or_404(Achievement, pk=ach_to_rm)
             jaset = JugglerAchievement.objects.filter(juggler=j, achievement=ach)
             jaset[0].delete()
-            fully_record_achievement_event(j, ach, False)
+            fully_record_achievement_event(j, ach, 'REMOVE')
             
     return HttpResponseRedirect(reverse('juggletrack.views.juggler', args=(j.id,)))
 
-def fully_record_achievement_event(juggler, achievement, isAdd):
+def fully_record_achievement_event(juggler, achievement, kind):
     #if the 1st achievement is being added (or the last achievement is being
     #removed) for this juggler we need to log a new value for EVERY achievement
     #(that has been achieved at least twice) and EVERY juggler (with at least
     #one achievement) because the total number of jugglers has changed and
     #that is used in the value calculation
     log_all = False
+    isAdd = kind == 'ADD'
     if ((isAdd and juggler.achievement.count() == 1) or
         ((not isAdd) and juggler.achievement.count() == 0)):
         log_all = True
 
-    event = log_achievement_event(juggler, achievement, isAdd)
+    event = log_achievement_event(juggler, achievement, kind)
     log_achievement_values(event, log_all)
     log_juggler_scores(event, log_all)
 
-def log_achievement_event(juggler, achievement, isAdd):
-    kind = isAdd and "ADD" or "REMOVE"
+def log_achievement_event(juggler, achievement, kind):
     event = AchievementEvent(juggler=juggler, achievement=achievement,
                              kind=kind, date_created=datetime.today())
     event.save()
@@ -199,12 +211,20 @@ def juggler_diff_chart_data(request):
 def dashboard(request):
     def eventify(event):
         return { 'created': event.date_created, 'description': event.eventify() }
+    def eventify_c(event, created):
+        return { 'created': created, 'description': e.eventify() }
 
-    recent_juggler_achievements = list(JugglerAchievement.objects.order_by('-date_created')[:5])
+    recent_juggler_achievements = list(JugglerAchievement.objects.filter(challengeable_since__isnull=True).order_by('-date_created')[:5])
     recent_added_achievements = list(Achievement.objects.order_by('-date_created')[:5])
     recent_jugglers = list(Juggler.objects.order_by('-date_created')[:5])
 
-    recent_events = reversed(sorted([eventify(e) for e in recent_juggler_achievements + recent_added_achievements + recent_jugglers], key=lambda e: e['created']))
+    recent_challengeable_achievements = list(JugglerAchievement.objects.filter(challengeable_since__isnull=False).order_by('-challengeable_since')[:5])
+
+    recent_events = reversed(sorted(
+            [eventify(e) \
+                for e in recent_juggler_achievements + recent_added_achievements + recent_jugglers] \
+            + [eventify_c(e, e.challengeable_since) for e in recent_challengeable_achievements], \
+        key=lambda e: e['created']))
 
     return render_to_response('dashboard.html', {'events': recent_events, 'request':request})
     

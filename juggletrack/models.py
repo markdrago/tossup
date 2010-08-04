@@ -94,18 +94,23 @@ class JugglerAchievement(models.Model):
     juggler = models.ForeignKey(Juggler)
     achievement = models.ForeignKey(Achievement)
     date_created = models.DateTimeField('date achieved', auto_now_add=True)
+    challengeable_since = models.DateTimeField('challengeable', null=True)
     
     def __unicode__(self):
         return self.juggler.get_name() + ": " + self.achievement.name
 
     def eventify(self):
-        return '<a href="%s">%s</a> has achieved <a href="%s">%s</a>' % \
-                (self.juggler.view(), self.juggler.get_name(), self.achievement.view(), self.achievement.name)
+        text = 'has achieved'
+        if not self.challengeable_since == None:
+            text = 'is accepting challenges for'
+        return '<a href="%s">%s</a> %s <a href="%s">%s</a>' % \
+                (self.juggler.view(), self.juggler.get_name(), text, self.achievement.view(), self.achievement.name)
 
 class AchievementEvent(models.Model):
     KIND_CHOICES = (
         ('ADD', 'Added'),
-        ('REMOVE', 'Removed')
+        ('REMOVE', 'Removed'),
+        ('CHALLENGE', 'is ready to be challenged at')
     )
     
     juggler = models.ForeignKey(Juggler)

@@ -10,12 +10,12 @@ div.module {
 }
 
 div.wrapper {
-    width: 424px;
+    width: 500px;
 }
 
 div.wrapper {
-    background-color: #acf;
     padding: 8px;
+    float: left;
 }
 
 div.wrapper div.section-head {
@@ -42,7 +42,6 @@ ol.events li.event {
 
 ol.events span.event-body {
     display: block;
-    width: 375px;
 }
 
 ol.events span.event-body .event-meta {
