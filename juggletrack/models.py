@@ -16,6 +16,7 @@ class Achievement(models.Model):
     date_created = models.DateTimeField('date created')
     notation_type = models.CharField(max_length=255, choices=(('JML', 'JML'), ('SITESWAP','Siteswap')))
     notation = models.TextField()
+    created_by = models.ForeignKey('Juggler', related_name='achievements_created_set', null=True)
 
     def __unicode__(self):
         return self.name

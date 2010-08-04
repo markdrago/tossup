@@ -14,6 +14,9 @@
     {{achievement.value|floatformat:2}}
   {% endifequal %}
 </td></tr>
+{% if achievement.created_by %}
+<tr><th>Added By:</th><td>{{achievement.created_by.get_name}}</td></tr>
+{% endif %}
 </table>
 <div style="float: left">
 {% ifnotequal achievement.notation|length 0 %}
@@ -55,6 +58,11 @@ Java not available
 {% else %}
 <p>Nobody has achieved this yet.</p>
 {% endif %}
+
+{% if request.user.is_authenticated %}
+<h4 style="padding-top: 10px"><a href="{% url juggletrack.views.achievement_add achievement.id %}">Edit this Achievement</a></h4>
+{% endif %}
+
 {% endblock %}
 
 {% block initjs %}

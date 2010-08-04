@@ -94,23 +94,23 @@
 {% block initjs %}
 <script type="text/javascript">
 $(document).ready(function() {
-  var renderNAs = function(obj) {
-    if (obj.aData[2] == "101.00")
-      return "N/A";
-    return obj.aData[2];
-  }
-
   {% if editable %}
-  var defaultsort = [1, 3, 2];
+  var value_column = [1, 3, 2];
   var cols = [[], [null, null], [null]];
   {% else %}
-  var defaultsort = [1, 1, 1];
+  var valud_column = [1, 1, 1];
   var cols = [[], [], []];
   {% endif %}
 
+  var renderNAs = function(obj) {
+    if (obj.aData[value_column] == "101.00")
+      return "N/A";
+    return obj.aData[value_column];
+  }
+
   var t0 = $('#challengeable').dataTable({
     "bPaginate": false,
-    "aaSorting": [[ defaultsort[0], "asc" ]],
+    "aaSorting": [[ value_column[0], "asc" ]],
     "aoColumns": cols[0].concat([{"sType": "html"},
             {"sType": "numeric",
              "fnRender": renderNAs,
@@ -119,7 +119,7 @@ $(document).ready(function() {
   });
   var t1 = $('#achieved').dataTable({
     "bPaginate": false,
-    "aaSorting": [[ defaultsort[1], "asc" ]],
+    "aaSorting": [[ value_column[1], "asc" ]],
     "aoColumns": cols[1].concat([{"sType": "html"},
             {"sType": "numeric",
              "fnRender": renderNAs,
@@ -128,7 +128,7 @@ $(document).ready(function() {
   });
   var t2 = $('#unachieved').dataTable({
     "bPaginate": false,
-    "aaSorting": [[ defaultsort[2], "asc" ]],
+    "aaSorting": [[ value_column[2], "asc" ]],
     "aoColumns": cols[2].concat([{"sType": "html"},
             {"sType": "numeric",
              "fnRender": renderNAs,
