@@ -8,11 +8,11 @@ from calendar import timegm
 from juggletrack.models import Juggler, Achievement, JugglerAchievement, JugglerScoreLog
 from juggletrack.utils import changelog
 
-def jugglers(request):
+def collection(request):
     jugglers = list(Juggler.objects.all())
     return render_to_response('index.html', {'jugglers': jugglers, 'request':request})
     
-def juggler(request, juggler_id):
+def detail(request, juggler_id):
     juggler = get_object_or_404(Juggler, pk=juggler_id)
     all = JugglerAchievement.objects.filter(juggler=juggler)
     achievements = list(all.filter(challengeable_since__isnull=True))
@@ -55,7 +55,7 @@ def juggler(request, juggler_id):
                                                'editable': editable,                                               
                                                'request': request})
 
-def juggler_alter_ach(request, juggler_id):
+def alter_ach(request, juggler_id):
     j = get_object_or_404(Juggler, pk=juggler_id)
     
     if not request.user.is_authenticated() or request.user != j.user:
@@ -81,7 +81,7 @@ def juggler_alter_ach(request, juggler_id):
             jaset[0].delete()
             fully_record_achievement_event(j, ach, 'REMOVE')
             
-    return HttpResponseRedirect(reverse('juggletrack.views.juggler.juggler', args=(j.id,)))
+    return HttpResponseRedirect(reverse('juggletrack.views.juggler.detail', args=(j.id,)))
 
 def fully_record_achievement_event(juggler, achievement, kind):
     #if the 1st achievement is being added (or the last achievement is being
@@ -99,7 +99,7 @@ def fully_record_achievement_event(juggler, achievement, kind):
     changelog.log_achievement_values(event, log_all)
     changelog.log_juggler_scores(event, log_all)
     
-def juggler_diff(request):
+def diff(request):
     juggler_ids = request.GET.getlist('juggler')
     juggler1 = get_object_or_404(Juggler, pk=juggler_ids[0])
     juggler2 = get_object_or_404(Juggler, pk=juggler_ids[1])
@@ -120,7 +120,7 @@ def do_juggler_diff(juggler1, juggler2):
     only2 = [a for a in ach2 if a not in ach1]
     return (only1, only2)
 
-def juggler_diff_chart_data(request):
+def diff_chart_data(request):
     if not request.is_ajax():
         return Http404
     if request.method != 'GET':
@@ -139,7 +139,7 @@ def juggler_diff_chart_data(request):
     
     return HttpResponse(json.dumps({'info': [event1, event2], 'data': [data1, data2]}))
 
-def juggler_score_chart_data(request, juggler_id):
+def score_chart_data(request, juggler_id):
     if not request.is_ajax():
         return Http404
     if request.method != 'GET':
@@ -153,7 +153,7 @@ def juggler_score_chart_data(request, juggler_id):
 
     return HttpResponse(json.dumps({'info': events, 'data': logs}))
 
-def jugglers_overall_score_chart_data(request):
+def overall_score_chart_data(request):
     if not request.is_ajax():
         return Http404
     if request.method != 'GET':

@@ -5,7 +5,7 @@
 {% block content %}
 {% if request.user.is_authenticated %}
 <br />
-<a href="{% url juggletrack.views.achievement.achievement_add %}">Add an Achievement</a>
+<a href="{% url juggletrack.views.achievement.add %}">Add an Achievement</a>
 {% endif %}
 
 {% block heading %}<h2>All Achievements</h2>{% endblock %}
@@ -22,7 +22,7 @@
   <tbody>
     {% for ach in achievements %}
     <tr>
-        <td><a href="{% url juggletrack.views.achievement.achievement ach.id %}">{{ach.name}}</a></td>
+        <td><a href="{% url juggletrack.views.achievement.detail ach.id %}">{{ach.name}}</a></td>
         <td class="value">{{ach.value|floatformat:2}}</td>
         <td>{{ach.get_kind_display|title}}</td>
         <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>

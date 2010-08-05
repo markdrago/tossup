@@ -8,7 +8,7 @@ from datetime import datetime
 
 from juggletrack.models import Achievement, JugglerAchievement, AchievementValueLog
 
-def achievement(request, achievement_id):
+def detail(request, achievement_id):
     ach = get_object_or_404(Achievement, pk=achievement_id)
     jugglers = JugglerAchievement.objects.filter(achievement=ach).order_by('date_created')
     return render_to_response('achievement.html', {'achievement': ach,
@@ -16,13 +16,13 @@ def achievement(request, achievement_id):
                                                    'tags': ",".join([t.name for t in Tag.objects.get_for_object(ach)]),
                                                    'request':request})
 
-def achievement_settags(request, achievement_id):
+def set_tags(request, achievement_id):
     ach = get_object_or_404(Achievement, pk=achievement_id)
     if 'tags' in request.POST:
         Tag.objects.update_tags(ach, request.POST.get('tags'))
-    return HttpResponseRedirect(reverse('juggletrack.views.achievement.achievement', args=(achievement_id,)))
+    return HttpResponseRedirect(reverse('juggletrack.views.achievement.detail', args=(achievement_id,)))
 
-def achievements_with_tag(request, tag_str):
+def collection_with_tag(request, tag_str):
     tag = Tag.objects.get(name=tag_str)
     raw_achievements = TaggedItem.objects.get_by_model(Achievement, tag)
 
@@ -30,11 +30,11 @@ def achievements_with_tag(request, tag_str):
                                                             'achievements': raw_achievements,
                                                             'request': request})
 
-def achievements(request):
+def collection(request):
     achievements = Achievement.objects.all()
     return render_to_response('achievements.html', {'achievements': achievements, 'request': request})
 
-def achievement_add(request, achievement_id=None):
+def add(request, achievement_id=None):
     if not request.user.is_authenticated():
         return HttpResponseForbidden()
 
@@ -72,9 +72,9 @@ def achievement_add(request, achievement_id=None):
     ach.save()
     Tag.objects.update_tags(ach, tags)
     
-    return HttpResponseRedirect(reverse('juggletrack.views.achievement.achievement', args=(ach.id,)))
+    return HttpResponseRedirect(reverse('juggletrack.views.achievement.detail', args=(ach.id,)))
 
-def achievement_value_chart_data(request, achievement_id):
+def value_chart_data(request, achievement_id):
     if not request.is_ajax():
         return Http404
     if request.method != 'GET':
@@ -87,3 +87,4 @@ def achievement_value_chart_data(request, achievement_id):
     events = eventlog_data(AchievementValueLog.objects.filter(achievement=ach).order_by('date_created'))
     
     return HttpResponse(json.dumps({'info': events, 'data': logs}))
+

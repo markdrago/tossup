@@ -32,7 +32,7 @@ class Achievement(models.Model):
         return 'There\'s a new achievement to be had: <a href="%s">%s</a>' % (self.view(), self.name)
 
     def view(self):
-        return reverse('juggletrack.views.achievement.achievement', args=(self.id,))
+        return reverse('juggletrack.views.achievement.detail', args=(self.id,))
 
 class JugglerAffiliation(models.Model):
     name = models.CharField(max_length=255)
@@ -70,7 +70,7 @@ class Juggler(models.Model):
         return 'A new juggler joins our ranks: <a href="%s">%s</a>' % (self.view(), self.get_name())
 
     def view(self):
-        return reverse('juggletrack.views.juggler.juggler', args=(self.id,))
+        return reverse('juggletrack.views.juggler.detail', args=(self.id,))
 
     def score(self):
         total = 0
