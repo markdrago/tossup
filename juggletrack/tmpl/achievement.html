@@ -33,7 +33,7 @@ Java not available
 <div id="value_vs_time_chart" style="width:300px; height:200px; float: left;"></div>
 <div style="clear: both;"></div>
 <h3>Tags</h3>
-<form action="{% url juggletrack.views.achievement_settags achievement.id %}" method="post">
+<form action="{% url juggletrack.views.achievement.achievement_settags achievement.id %}" method="post">
         <input name="tags" type="text" value="{{tags}}" />
         <input type="submit" value="Set Tags" />
     </form>
@@ -60,7 +60,7 @@ Java not available
 {% endif %}
 
 {% if request.user.is_authenticated %}
-<h4 style="padding-top: 10px"><a href="{% url juggletrack.views.achievement_add achievement.id %}">Edit this Achievement</a></h4>
+<h4 style="padding-top: 10px"><a href="{% url juggletrack.views.achievement.achievement_add achievement.id %}">Edit this Achievement</a></h4>
 {% endif %}
 
 {% endblock %}
