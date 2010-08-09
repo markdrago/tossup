@@ -15,10 +15,13 @@ def dashboard(request):
 
     recent_challengeable_achievements = list(JugglerAchievement.objects.filter(challengeable_since__isnull=False).order_by('-challengeable_since')[:5])
 
-    recent_events = reversed(sorted(
+    recent_events = sorted(
             [eventify(e) \
                 for e in recent_juggler_achievements + recent_added_achievements + recent_jugglers] \
             + [eventify_c(e, e.challengeable_since) for e in recent_challengeable_achievements], \
-        key=lambda e: e['created']))
+        key=lambda e: e['created'])
 
-    return render_to_response('dashboard.html', {'events': recent_events, 'request':request})
+    recent_events.reverse()
+    recent_events = recent_events[0:10]
+    return render_to_response('sidebar/events.html', {'events': recent_events})
+

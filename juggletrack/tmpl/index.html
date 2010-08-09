@@ -15,24 +15,33 @@ $().ready(function() {
       }
     }
 
-    var submit = document.getElementById('submit_button');
+    var submit = $('#submit_button');
     if (count == 2) {
-      submit.disabled = false;
+      submit[0].disabled = false;
+      submit.removeClass('disabled');
     } else {
-      submit.disabled = true;
+      submit[0].disabled = true;
+      submit.addClass('disabled');
     }
   }
 
   force_two_checked();
 
   $('#jugglers').dataTable({
+    "bFilter": false,
+    "bInfo": false,
     "bPaginate": false,
     "aaSorting": [[ 2, "desc" ]],
     "aoColumns": [null, {"sType": "html"}, null, null]
   });
+  $('#jugglers').css('width', '100%');
+  
   $('.juggle_check').click(force_two_checked);
   
+  $('#sidebar').load('/juggletrack/dashboard');
+
   //draw chart
+  /*
   var options = {
     lines: { show: true },
     points: { show: true },
@@ -52,37 +61,49 @@ $().ready(function() {
     dataType: 'json',
     success: onDataReceived
   });
+  */
 });
 </script>
 {% endblock %}
 
 {% block content %}
-<h3>Jugglers</h3>
-<h4 style="margin-left: auto;margin-right: auto; width: 300px; text-align: center; padding-bottom: 0px;">Overall Score Total vs. Time</h4>
-<div id="overall_score_vs_time_chart" style="width:800px;height:200px;margin-left:auto;margin-right:auto;"></div>
-<form action="juggler_diff" method="get">
-<table id="jugglers" class="display">
-<thead>
-<tr>
-<th></th>
-<th>Name</th>
-<th>Score</th>
-<th>Affiliation</th>
-</thead>
-<tbody>
-</tr>
-{% for juggler in jugglers %}
-<tr>
-<td><input type="checkbox" name="juggler" value="{{juggler.id}}" class="juggle_check" /></td>
-<td><a href="juggler/{{juggler.id}}/">{{ juggler.get_name }}</a></td>
-<td>{{juggler.score|floatformat:2}}</td>
-<td>{{juggler.affiliation.name}}</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
-<br />
-  <input type="submit" id="submit_button" class="submit_button" value="Fight!" />
-</form>
+<div class="container">
+    <div id="left" class="span-18">
+        <h2>Jugglers</h2>
+
+<!-- Move to some other overall stats page -->
+<!--
+<h4>Overall Score Total vs. Time</h4>
+<div id="overall_score_vs_time_chart" style="width:800px;height:200px;"></div>
+-->
+
+        <form action="juggler_diff" method="get">
+            <table id="jugglers" class="display">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Score</th>
+                        <th>Affiliation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for juggler in jugglers %}
+                        <tr>
+                            <td><input type="checkbox" name="juggler" value="{{juggler.id}}" class="juggle_check" /></td>
+                            <td><a href="juggler/{{juggler.id}}/">{{ juggler.get_name }}</a></td>
+                            <td>{{juggler.score|floatformat:2}}</td>
+                            <td>{{juggler.affiliation.name}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button onclick="$(form).submit()" id="submit_button">Fight!</button>
+        </form>
+    </div>
+    <div id="sidebar" class="span-6 last">
+    Sidebar goes here
+    </div>
+</div>
 {% endblock %}
 

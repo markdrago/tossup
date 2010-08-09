@@ -3,33 +3,37 @@
 {% block title %} - All Achievements{% endblock %}
 
 {% block content %}
-{% if request.user.is_authenticated %}
-<br />
-<a href="{% url juggletrack.views.achievement.add %}">Add an Achievement</a>
-{% endif %}
+<div class="container">
+    <div class="span-24">
+        {% if request.user.is_authenticated %}
+        <br />
+        <a href="{% url juggletrack.views.achievement.add %}">Add an Achievement</a>
+        {% endif %}
 
-{% block heading %}<h2>All Achievements</h2>{% endblock %}
+        {% block heading %}<h2>Achievements</h2>{% endblock %}
 
-<table id="achievements" class="display">
-  <thead>
-    <tr>
-        <th>Achievement</th>
-        <th>Value</th>
-        <th>Type</th>
-        <th>Date Created</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for ach in achievements %}
-    <tr>
-        <td><a href="{% url juggletrack.views.achievement.detail ach.id %}">{{ach.name}}</a></td>
-        <td class="value">{{ach.value|floatformat:2}}</td>
-        <td>{{ach.get_kind_display|title}}</td>
-        <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+        <table id="achievements" class="display">
+            <thead>
+                <tr>
+                    <th>Achievement</th>
+                    <th>Value</th>
+                    <th>Type</th>
+                    <th>Date Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ach in achievements %}
+                    <tr>
+                        <td><a href="{% url juggletrack.views.achievement.detail ach.id %}">{{ach.name}}</a></td>
+                        <td class="value">{{ach.value|floatformat:2}}</td>
+                        <td>{{ach.get_kind_display|title}}</td>
+                        <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}
 
 {% block initjs %}
@@ -50,6 +54,7 @@
          "bUseRendered": false},
         null, null]
     });
+    $('#achievements').css('width', '100%');
 
     var values = [''];
     $('td.value').each(function() {

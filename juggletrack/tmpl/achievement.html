@@ -3,66 +3,96 @@
 {% block title %} - {{achievement.name}}{% endblock %}
 
 {% block content %}
-<h2>{{achievement.name}}</h2>
-<table>
-<tr><th>Type</th><td>{{achievement.get_kind_display|title}}</td></tr>
-<tr><th>Value</th>
-<td>
-  {% ifequal achievement.value 101 %}
-    N/A
-  {% else %}
-    {{achievement.value|floatformat:2}}
-  {% endifequal %}
-</td></tr>
-{% if achievement.created_by %}
-<tr><th>Added By:</th><td>{{achievement.created_by.get_name}}</td></tr>
-{% endif %}
-</table>
-<div style="float: left">
-{% ifnotequal achievement.notation|length 0 %}
-<applet archive="/juggletrack/site_media/JugglingLab/bin/JugglingLab.jar" code="JugglingLab" width=200 height=300>
-<param name="config" value="entry=none;view=simple" />
-<param name="notation" value="{{achievement.notation_type}}"/>
-<param name='pattern' value='
-{{achievement.notation}}
-'/>
-Java not available
-</applet>
-{% endifnotequal %}
+<div class="container">
+    <div class="span-16">
+        <div class="span-10">
+            <h2 class="title">{{achievement.name}}</h2>
+            <h3>Value:
+                {% ifequal achievement.value 101 %}
+                    N/A
+                {% else %}
+                    {{achievement.value|floatformat:2}}
+                {% endifequal %}
+            </h3>
+
+            {% if request.user.is_authenticated %}
+                <h4><a href="{% url juggletrack.views.achievement.add achievement.id %}">Edit this Achievement</a></h4>
+            {% endif %}
+        </div>
+        
+        <div class="span-16 last">
+            <h3 class="title">Jugglers</h3>
+            {% if jugglers %}
+                <table id="jugglers" class="display">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Date Achieved</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for j in jugglers %}
+                            <tr>
+                                <td><a href="/juggletrack/juggler/{{j.juggler.id}}">{{j.juggler.get_name}}</a></td>
+                                <td>{{j.date_created|date:"M d, Y @ H:i"}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Nobody has achieved this yet.</p>
+            {% endif %}
+        </div>
+    
+        <div class="span-16 last">
+            <h3 class="title">Tags</h3>
+            <form action="{% url juggletrack.views.achievement.set_tags achievement.id %}" method="post">
+                <input name="tags" type="text" value="{{tags}}" />
+                {% if request.user.is_authenticated %}
+                    <input type="submit" value="Set Tags" />
+                {% endif %}
+            </form>
+        </div>
+
+    </div>
+    
+    <div id="sidebar" class="span-8 last">
+        <!--
+        <div class="module achievement_stats">
+            <ul>
+                <li><label>Value</label>
+                    {% ifequal achievement.value 101 %}
+                        N/A
+                    {% else %}
+                        {{achievement.value|floatformat:2}}
+                    {% endifequal %}
+                </li>
+                <li><label>Type</label>{{achievement.get_kind_display|title}}</li>
+                {% if achievement.created_by %}
+                    <li><label>Added By:</label>{{achievement.created_by.get_name}}</li>
+                {% endif %}
+            </ul>
+        </div>
+        -->
+
+        <div class="module achievement_chart">
+            <div id="value_vs_time_chart" style="width:300px; height:300px; margin: 0 auto;"></div>
+        </div>
+
+        <div class="module achievement_animation">
+            {% ifnotequal achievement.notation|length 0 %}
+                <div class="applet" style="width: 300px; height: 300px; text-align: center;">
+                    <applet archive="/juggletrack/site_media/JugglingLab/bin/JugglingLab.jar" code="JugglingLab" width=200 height=300>
+                        <param name="config" value="entry=none;view=simple" />
+                        <param name="notation" value="{{achievement.notation_type}}"/>
+                        <param name='pattern' value='{{achievement.notation}}' />
+                        Java not available
+                    </applet>
+                </div>
+            {% endifnotequal %}
+        </div>
+    </div>
 </div>
-<div id="value_vs_time_chart" style="width:300px; height:200px; float: left;"></div>
-<div style="clear: both;"></div>
-<h3>Tags</h3>
-<form action="{% url juggletrack.views.achievement.set_tags achievement.id %}" method="post">
-        <input name="tags" type="text" value="{{tags}}" />
-        <input type="submit" value="Set Tags" />
-    </form>
-<h3>Jugglers</h3>
-{% if jugglers %}
-<table id="jugglers" class="display">
-  <thead>
-    <tr>
-        <th>Name</th>
-        <th>Date Achieved</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for j in jugglers %}
-    <tr>
-        <td><a href="/juggletrack/juggler/{{j.juggler.id}}">{{j.juggler.get_name}}</a></td>
-        <td>{{j.date_created|date:"M d, Y @ H:i"}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-<p>Nobody has achieved this yet.</p>
-{% endif %}
-
-{% if request.user.is_authenticated %}
-<h4 style="padding-top: 10px"><a href="{% url juggletrack.views.achievement.add achievement.id %}">Edit this Achievement</a></h4>
-{% endif %}
-
 {% endblock %}
 
 {% block initjs %}
@@ -71,7 +101,9 @@ Java not available
     "bPaginate": false,
     "aaSorting": [[ 1, "desc" ]],
     "bFilter": false,
+    "bInfo": false,
   });
+  $('#jugglers').css('width', '100%');
   
   //draw chart
   var options = {

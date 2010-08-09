@@ -7,42 +7,19 @@
 <script type="text/javascript" src="/juggletrack/site_media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/juggletrack/site_media/js/jquery.flot.min.js"></script>
 <script type="text/javascript" src="/juggletrack/site_media/js/chart.js"></script>
+<!--
 <link rel="stylesheet" type="text/css" href="/juggletrack/site_media/css/juggletrack.css" />
 <link rel="stylesheet" type="text/css" href="/juggletrack/site_media/css/table.css" />
-<style type="text/css">
-table {
-  border-collapse: collapse;
-}
-td, th {
-  border: thin solid black;
-  padding: 4px;
-}
-h3 {
-  margin-bottom: 4px;
-}
-input.submit_button {
-  margin-top: 10px;
-}
-div#right {
-  float: right;
-}
-div#top {
-  float: left;
-}
-div#header {
-  padding-bottom: 5px;
-}
-div#nav {
-  padding-top: 10px;
-}
-div#header,
-div#header a,
-div#header a:hover,
-div#header a:visited,
-div#header a:active {
-  color: white;
-}
-</style>
+-->
+<link rel="stylesheet" href="/juggletrack/site_media/css/blueprint/screen.css" type="text/css" media="screen, projection">
+<link rel="stylesheet" href="/juggletrack/site_media/css/blueprint/print.css" type="text/css" media="print">
+<!--[if lt IE 8]>
+  <link rel="stylesheet" href="/juggletrack/site_media/css/blueprint/ie.css" type="text/css" media="screen, projection">
+<![endif]-->
+<link rel="stylesheet" href="/juggletrack/site_media/css/blueprint/plugins/buttons/screen.css" type="text/css" media="screen, projection">
+<link rel="stylesheet" href="/juggletrack/site_media/css/style.css" type="text/css" media="screen, projection">
+<link rel="stylesheet" href="/juggletrack/site_media/css/table.css" type="text/css" media="screen, projection">
+<link rel="stylesheet" href="/juggletrack/site_media/css/blueprint/plugins/buttons/screen.css" type="text/css" media="screen, projection">
 {% block script %}{% endblock %}
 </head>
 <body>
@@ -55,25 +32,27 @@ div#header a:active {
 {% url juggletrack.views.auth.register as register_url %}
 {% url juggletrack.views.juggler.detail juggler_id=request.user.get_profile.id as juggler_url %}
 
-<div id="header">
-<div id="top">
-    <span id="logo">JuggleTrack</span>
+<div id="top" class="container">
+<div class="span-20">
+    <h1>JuggleTrack</h1>
 </div>
-<div id="right">
+<div class="span-4 last">
     {% if request.user.is_authenticated %}
     Logged in as: <a href="{{juggler_url}}">{{request.user.get_full_name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="{{logout_url}}">Logout</a>
     {% else %}
     <a href="{{login_url}}">Login</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="{{register_url}}">Register</a>
     {% endif %}
 </div>
-<div id="nav">
+
+<div id="nav" class="span-24">
     <ul>
-        <li class="{% active request dashboard_url %}"><a href="{{dashboard_url}}">Dashboard</a></li>
         <li class="{% active request achievements_url %}"><a href="{{achievements_url}}">Achievements</a></li>
         <li class="{% active request jugglers_url %}"><a href="{{jugglers_url}}">Jugglers</a></li>
     </ul>
 </div>
+
 </div>
+
 {% block content %}
 {% endblock %}
 </body>

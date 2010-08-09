@@ -76,8 +76,6 @@ def add(request, achievement_id=None):
     return HttpResponseRedirect(reverse('juggletrack.views.achievement.detail', args=(ach.id,)))
 
 def value_chart_data(request, achievement_id):
-    if not request.is_ajax():
-        return Http404
     if request.method != 'GET':
         return Http404
 
