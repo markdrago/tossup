@@ -7,6 +7,7 @@ import json
 from datetime import datetime
 
 from juggletrack.models import Achievement, JugglerAchievement, AchievementValueLog
+from juggletrack.utils import changelog
 
 def detail(request, achievement_id):
     ach = get_object_or_404(Achievement, pk=achievement_id)
@@ -83,8 +84,8 @@ def value_chart_data(request, achievement_id):
     ach = get_object_or_404(Achievement, pk=achievement_id)
     
     #only include the last score log per day
-    logs = changelog_data(AchievementValueLog.objects.filter(achievement=ach).order_by('date_created'))
-    events = eventlog_data(AchievementValueLog.objects.filter(achievement=ach).order_by('date_created'))
+    logs = changelog.changelog_data(AchievementValueLog.objects.filter(achievement=ach).order_by('date_created'))
+    events = changelog.eventlog_data(AchievementValueLog.objects.filter(achievement=ach).order_by('date_created'))
     
     return HttpResponse(json.dumps({'info': events, 'data': logs}))
 
