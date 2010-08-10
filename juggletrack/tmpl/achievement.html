@@ -47,9 +47,11 @@
         <div class="span-16 last">
             <h3 class="title">Tags</h3>
             <form action="{% url juggletrack.views.achievement.set_tags achievement.id %}" method="post">
-                <input name="tags" type="text" value="{{tags}}" />
                 {% if request.user.is_authenticated %}
+                    <input name="tags" type="text" value="{{tags}}" />
                     <input type="submit" value="Set Tags" />
+                {% else %}
+                    <p>{{tags}}</p>
                 {% endif %}
             </form>
         </div>

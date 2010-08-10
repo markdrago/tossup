@@ -6,21 +6,20 @@
 <div class="container">
     <div class="span-16">
         <div class="span-16 last">
-            <h2 class="title">{{juggler.get_name}}</h2>
+            <h2 class="title">
+                {{juggler.get_name}}
+                {% if not has_user_account and not request.user.is_authenticated %}
+                    <a style="font-size: x-small" href="../../register/{{juggler.id}}">[Claim this Juggler Account]</a>
+                {% endif %}
+            </h2>
             <h3>Score: {{juggler.score|floatformat:2}}</h3>
         </div>
         
-        {% if not has_user_account and not request.user.is_authenticated %}
-            <div class="span-16 last">
-                <h3><a href="../../register/{{juggler.id}}">Claim this Juggler Account</a></h3>
-            </div>
-        {% endif %}
-
         {% if editable %}<form action="alter_achievements" method="post">{% endif %}
 
         {% if challengeable %}
             <div class="span-16 last">
-                <h3 class="title">Challengeable Achievements</h3>
+                <h3 class="title">Challengeable Achievements <span class="listcount">({{challengeable|length}})</span></h3>
                 <table id="challengeable" class="display">
                     <thead>
                         <tr>
@@ -51,7 +50,7 @@
         {% endif %}
 
         <div class="span-16 last">
-            <h3 class="title">Achievements</h3>
+            <h3 class="title">Achievements <span class="listcount">({{achievements|length}})</span></h3>
             <table id="achieved" class="display">
                 <thead>
                     <tr>
@@ -83,7 +82,7 @@
         </div>
 
         <div class="span-16 last">
-            <h3 class="title">Achievements Not Yet Achieved</h3>
+            <h3 class="title">Achievements Not Yet Achieved <span class="listcount">({{unachieved|length}})</span></h3>
             <table id="unachieved" class="display">
                 <thead>
                     <tr>
@@ -140,6 +139,7 @@ $(document).ready(function() {
 
   var t0 = $('#challengeable').dataTable({
     "bPaginate": false,
+    "bInfo": false,
     "aaSorting": [[ value_column[0], "asc" ]],
     "aoColumns": cols[0].concat([{"sType": "html"},
             {"sType": "numeric",
@@ -151,6 +151,7 @@ $(document).ready(function() {
 
   var t1 = $('#achieved').dataTable({
     "bPaginate": false,
+    "bInfo": false,
     "aaSorting": [[ value_column[1], "asc" ]],
     "aoColumns": cols[1].concat([{"sType": "html"},
             {"sType": "numeric",
@@ -162,6 +163,7 @@ $(document).ready(function() {
   
   var t2 = $('#unachieved').dataTable({
     "bPaginate": false,
+    "bInfo": false,
     "aaSorting": [[ value_column[2], "asc" ]],
     "aoColumns": cols[2].concat([{"sType": "html"},
             {"sType": "numeric",

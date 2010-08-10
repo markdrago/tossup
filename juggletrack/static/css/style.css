@@ -16,6 +16,10 @@ label {
   margin-right: 5px;
 }
 
+span.listcount {
+  font-size: small;
+}
+
 /* disabled button */
 button.disabled, button.disabled:hover {
   background-color: lightgray;
@@ -24,8 +28,17 @@ button.disabled, button.disabled:hover {
 }
 
 /* navigation bar style */
+div#nav ul {
+  padding-left: 5px;
+  margin-bottom: 5px;
+}
+
 div#nav ul li {
   display: inline;
+}
+
+div#nav a {
+  color: black;
 }
 
 div#top_gutter {
