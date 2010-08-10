@@ -28,6 +28,16 @@ div#nav ul li {
   display: inline;
 }
 
+div#top_gutter {
+  text-align: right;
+  position: relative;
+  right: 8px;
+}
+
+div#top_gutter a {
+  color: black;
+}
+
 /* sidebar style */
 div#sidebar div.module {
   margin: 4px;

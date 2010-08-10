@@ -33,10 +33,10 @@
 {% url juggletrack.views.juggler.detail juggler_id=request.user.get_profile.id as juggler_url %}
 
 <div id="top" class="container">
-<div class="span-20">
+<div class="span-18">
     <h1>JuggleTrack</h1>
 </div>
-<div class="span-4 last">
+<div id="top_gutter" class="span-6 last">
     {% if request.user.is_authenticated %}
     Logged in as: <a href="{{juggler_url}}">{{request.user.get_full_name}}</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="{{logout_url}}">Logout</a>
     {% else %}
