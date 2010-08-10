@@ -3,94 +3,120 @@
 {% block title %} - {{juggler.get_name}}{% endblock %}
 
 {% block content %}
-<h2>{{juggler.get_name}} - Score: {{juggler.score|floatformat:2}}</h2>
-{% if not has_user_account and not request.user.is_authenticated %}
-<h3><a href="../../register/{{juggler.id}}">Claim this Juggler Account</a></h3>
-{% endif %}
-<div id="score_vs_time_chart" style="width:300px; height:200px;"></div>
-{% if editable %}<form action="alter_achievements" method="post">{% endif %}
-<h3>Challengeable Achievements</h3>
-<table id="challengeable" class="display">
-  <thead>
-    <tr>
-        <th>Achievement</th>
-        <th>Value</th>
-        <th>Type</th>
-        <th>Date Achieved</th>
-        <th>Challengeable Since</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for ach in challengeable %}
-    <tr>
-        <td><a href="../../achievement/{{ach.achievement.id}}">{{ach.achievement.name}}</a></td>
-        <td class="value">{{ach.achievement.value|floatformat:2}}</td>
-        <td>{{ach.achievement.get_kind_display|title}}</td>
-        <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
-        <td>{{ach.challengeable_since|date:"M d, Y @ H:i"}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-<br /> 
-{% if editable %}
-    <input class="submit_button" type="submit" value="Submit" />
-{% endif %}
-<h3>Achievements</h3>
-<table id="achieved" class="display">
-  <thead>
-    <tr>
-        {% if editable %}<th>Remove?</th>{% endif %}
-        {% if editable %}<th>Challenge?</th>{% endif %}
-        <th>Achievement</th>
-        <th>Value</th>
-        <th>Type</th>
-        <th>Date Achieved</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for ach in achievements %}
-    <tr>
-        {% if editable %}<td><input type="checkbox" name="remove" value="{{ach.achievement.id}}" /></td>{% endif %}
-        {% if editable %}<td><input type="checkbox" name="challenge" value="{{ach.achievement.id}}" /></td>{% endif %}
-        <td><a href="../../achievement/{{ach.achievement.id}}">{{ach.achievement.name}}</a></td>
-        <td class="value">{{ach.achievement.value|floatformat:2}}</td>
-        <td>{{ach.achievement.get_kind_display|title}}</td>
-        <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-<br /> 
-{% if editable %}
-    <input class="submit_button" type="submit" value="Submit" />
-{% endif %}
-<h3>Achievements Not Yet Achieved</h3>
-    <table id="unachieved" class="display">
-      <thead>
-        <tr>
-            {% if editable %}<th>Add?</th>{% endif %}
-            <th>Achievement</th>
-            <th>Value</th>
-            <th>Type</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for unach in unachieved %}
-        <tr>
-            {% if editable %}<td><input type="checkbox" name="add" value="{{ unach.id }}" /></td>{% endif %}
-            <td><a href="../../achievement/{{unach.id}}">{{unach.name}}</a></td>
-            <td class="value">{{unach.value|floatformat:2}}</td>
-            <td>{{unach.get_kind_display|title}}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <br />
-{% if editable %}
-    <input class="submit_button" type="submit" value="Submit" />
-</form>
-{% endif %}
+<div class="container">
+    <div class="span-16">
+        <div class="span-16 last">
+            <h2 class="title">{{juggler.get_name}}</h2>
+            <h3>Score: {{juggler.score|floatformat:2}}</h3>
+        </div>
+        
+        {% if not has_user_account and not request.user.is_authenticated %}
+            <div class="span-16 last">
+                <h3><a href="../../register/{{juggler.id}}">Claim this Juggler Account</a></h3>
+            </div>
+        {% endif %}
+
+        {% if editable %}<form action="alter_achievements" method="post">{% endif %}
+
+        {% if challengeable %}
+            <div class="span-16 last">
+                <h3 class="title">Challengeable Achievements</h3>
+                <table id="challengeable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Achievement</th>
+                            <th>Value</th>
+                            <th>Type</th>
+                            <th>Date Achieved</th>
+                            <th>Challengeable Since</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ach in challengeable %}
+                            <tr>
+                                <td><a href="../../achievement/{{ach.achievement.id}}">{{ach.achievement.name}}</a></td>
+                                <td class="value">{{ach.achievement.value|floatformat:2}}</td>
+                                <td>{{ach.achievement.get_kind_display|title}}</td>
+                                <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
+                                <td>{{ach.challengeable_since|date:"M d, Y @ H:i"}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br /> 
+                {% if editable %}
+                    <input class="submit_button" type="submit" value="Submit" />
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="span-16 last">
+            <h3 class="title">Achievements</h3>
+            <table id="achieved" class="display">
+                <thead>
+                    <tr>
+                        {% if editable %}<th>Remove?</th>{% endif %}
+                        {% if editable %}<th>Challenge?</th>{% endif %}
+                        <th>Achievement</th>
+                        <th>Value</th>
+                        <th>Type</th>
+                        <th>Date Achieved</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ach in achievements %}
+                        <tr>
+                            {% if editable %}<td><input type="checkbox" name="remove" value="{{ach.achievement.id}}" /></td>{% endif %}
+                            {% if editable %}<td><input type="checkbox" name="challenge" value="{{ach.achievement.id}}" /></td>{% endif %}
+                            <td><a href="../../achievement/{{ach.achievement.id}}">{{ach.achievement.name}}</a></td>
+                            <td class="value">{{ach.achievement.value|floatformat:2}}</td>
+                            <td>{{ach.achievement.get_kind_display|title}}</td>
+                            <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br /> 
+            {% if editable %}
+                <input class="submit_button" type="submit" value="Submit" />
+            {% endif %}
+        </div>
+
+        <div class="span-16 last">
+            <h3 class="title">Achievements Not Yet Achieved</h3>
+            <table id="unachieved" class="display">
+                <thead>
+                    <tr>
+                        {% if editable %}<th>Add?</th>{% endif %}
+                        <th>Achievement</th>
+                        <th>Value</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for unach in unachieved %}
+                        <tr>
+                            {% if editable %}<td><input type="checkbox" name="add" value="{{ unach.id }}" /></td>{% endif %}
+                            <td><a href="../../achievement/{{unach.id}}">{{unach.name}}</a></td>
+                            <td class="value">{{unach.value|floatformat:2}}</td>
+                            <td>{{unach.get_kind_display|title}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br />
+            {% if editable %}
+                <input class="submit_button" type="submit" value="Submit" /></form>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div id="sidebar" class="span-8 last">
+        <div class="module juggler_chart">
+            <div id="score_vs_time_chart" style="width:300px; height:200px;"></div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block initjs %}
@@ -121,6 +147,8 @@ $(document).ready(function() {
              "bUseRendered": false},
              null, null, null])
   });
+  $('#challengeable').css('width', '100%');
+
   var t1 = $('#achieved').dataTable({
     "bPaginate": false,
     "aaSorting": [[ value_column[1], "asc" ]],
@@ -130,6 +158,8 @@ $(document).ready(function() {
              "bUseRendered": false},
              null, null])
   });
+  $('#achieved').css('width', '100%');
+  
   var t2 = $('#unachieved').dataTable({
     "bPaginate": false,
     "aaSorting": [[ value_column[2], "asc" ]],
@@ -139,7 +169,8 @@ $(document).ready(function() {
              "bUseRendered": false},
              null])
   });
-
+  $('#unachieved').css('width', '100%');
+  
   $.map([t0, t1, t2], function(table, index) {
     var values = [''];
     table.find('td.value').each(function() {
@@ -195,3 +226,4 @@ $(document).ready(function() {
 });
 </script>
 {% endblock %}
+

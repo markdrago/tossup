@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 
 import json
 from calendar import timegm
+from datetime import datetime
 
 from juggletrack.models import Juggler, Achievement, JugglerAchievement, JugglerScoreLog
 from juggletrack.utils import changelog
