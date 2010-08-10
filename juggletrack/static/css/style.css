@@ -135,3 +135,10 @@ div#register_box #submit_button {
 div.table {
   padding-bottom: 20px;
 }
+
+/* juggler diff style */
+div#diff_vs_time_chart,
+div#chart_legend {
+  margin-left: auto;
+  margin-right: auto;
+}

@@ -3,83 +3,95 @@
 {% block title %} - {{juggler1.get_name}} vs. {{juggler2.get_name}}{% endblock %}
 
 {% block content %}
-<h2>Juggler Fight!</h2>
-<p>Each list shows the juggler's achievements which the other juggler has not achieved.</p>
-<div>
-<div id="diff_vs_time_chart" style="width:600px;height:300px;float:left"></div>
-<div id="chart_legend"></div>
-</div>
-<div style="clear:both"></div>
-<div id="juggler1" style="float: left; padding-right: 20px;">
-<h2>{{juggler1.get_name}} - Score: {{juggler1.score|floatformat:2}}</h2>
-{% if only1 %}
-<table id="juggler-1" class="display">
-  <thead>
-    <tr>
-        <th>Achievement</th>
-        <th>Value</th>
-        <th>Type</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for ach in only1 %}
-    <tr>
-        <td><a href="/juggletrack/achievement/{{ach.id}}">{{ach.name}}</a></td>
-        <td>
-          {% ifequal ach.value 101 %}
-            N/A
-          {% else %}
-            {{ach.value|floatformat:2}}
-          {% endifequal %}
-        </td>
-        <td>{{ach.get_kind_display|title}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-  {% if juggler1.score %}
-    All of {{juggler1.get_name}}'s achievements<br />have been achieved by {{juggler2.get_name}}.
-  {% else %}
-    {{juggler1.get_name}} does not have any achievements.
-  {% endif %}
-{% endif %}
-</div>
+<div class="container">
+    <div class="span-24 last">
+        <h2>Juggler Comparison</h2>
+    </div>
 
-<div id="juggler2" style="float: left;">
-<h2>{{juggler2.get_name}} - Score: {{juggler2.score|floatformat:2}}</h2>
-{% if only2 %}
-<table id="juggler-2" class="display">
-  <thead>
-    <tr>
-        <th>Achievement</th>
-        <th>Value</th>
-        <th>Type</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for ach in only2 %}
-    <tr>
-        <td><a href="/juggletrack/achievement/{{ach.id}}">{{ach.name}}</a></td>
-        <td>
-          {% ifequal ach.value 101 %}
-            N/A
-          {% else %}
-            {{ach.value|floatformat:2}}
-          {% endifequal %}
-        </td>
-        <td>{{ach.get_kind_display|title}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-    {% if juggler2.score %}
-        All of {{juggler2.get_name}}'s achievements<br />have been achieved by {{juggler1.get_name}}
-    {% else %}
-        {{juggler2.get_name}} does not have any achievements.
-    {% endif %}
-{% endif %}
+    <div class="span-24 last">
+        <div id="diff_vs_time_chart" style="width:600px;height:300px"></div>
+        <!-- TODO: fix width of legend -->
+        <div id="chart_legend" style="width:200px;"></div>
+    </div>
+
+    <div class="span-24">
+        <p>Each list shows the juggler's achievements which the other juggler has not achieved.</p>
+        <div id="juggler1" class="span-12">
+            <h2 class="title">{{juggler1.get_name}}</h2>
+            <h3>Score: {{juggler1.score|floatformat:2}}</h3>
+
+            {% if only1 %}
+                <table id="juggler-1" class="display">
+                    <thead>
+                        <tr>
+                            <th>Achievement</th>
+                            <th>Value</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ach in only1 %}
+                        <tr>
+                            <td><a href="/juggletrack/achievement/{{ach.id}}">{{ach.name}}</a></td>
+                            <td>
+                                {% ifequal ach.value 101 %}
+                                    N/A
+                                {% else %}
+                                    {{ach.value|floatformat:2}}
+                                {% endifequal %}
+                            </td>
+                            <td>{{ach.get_kind_display|title}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                {% if juggler1.score %}
+                    All of {{juggler1.get_name}}'s achievements<br />have been achieved by {{juggler2.get_name}}.
+                {% else %}
+                    {{juggler1.get_name}} does not have any achievements.
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <div id="juggler2" class="span-12 last">
+            <h2 class="title">{{juggler2.get_name}}</h2>
+            <h3>Score: {{juggler2.score|floatformat:2}}</h3>
+
+            {% if only2 %}
+                <table id="juggler-2" class="display">
+                    <thead>
+                        <tr>
+                            <th>Achievement</th>
+                            <th>Value</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ach in only2 %}
+                            <tr>
+                                <td><a href="/juggletrack/achievement/{{ach.id}}">{{ach.name}}</a></td>
+                                <td>
+                                    {% ifequal ach.value 101 %}
+                                        N/A
+                                    {% else %}
+                                        {{ach.value|floatformat:2}}
+                                    {% endifequal %}
+                                </td>
+                                <td>{{ach.get_kind_display|title}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                {% if juggler2.score %}
+                    All of {{juggler2.get_name}}'s achievements<br />have been achieved by {{juggler1.get_name}}
+                {% else %}
+                    {{juggler2.get_name}} does not have any achievements.
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -89,11 +101,15 @@
     var tableSettings = {
       "bPaginate": false,
       "bFilter": false,
+      "bInfo": false,
       "aaSorting": [[ 1, "desc" ]],
       "aoColumns": [{"sType": "html"}, {"sType": "numeric"}, null]
     };
     $('#juggler-1').dataTable(tableSettings);
     $('#juggler-2').dataTable(tableSettings);
+
+    $('#juggler-1').css('width', '100%');
+    $('#juggler-2').css('width', '100%');
 
     //draw chart
     var options = {
