@@ -3,48 +3,65 @@
 {% block title %} - {% if id %}Edit{%else%}Add{%endif%} Achievement{% endblock %}
 
 {% block content %}
-<h2>{% if id %}Edit{%else%}Add{%endif%} an Achievement</h2>
+<div class="container">
+    <form method="post">
 
-<form method="post">
+        <div class="span-24">
+            <h2>{% if id %}Edit{%else%}Add{%endif%} an Achievement</h2>
 
-    <div>
-        <label>Name:</label> <input type="text" name="name" value="{{name}}"/> <br />
-        <label>Type:</label>
-        <select name="kind">
-            <option value="PATTERN">Pattern</option>
-            <option value="STUNT">Stunt</option>
-        </select>
-    </div>
+            <div class="span-3 label">
+                <label>Name:</label>
+            </div>
+            <div class="span-21 last">
+                <input type="text" name="name" value="{{name}}"/>
+            </div>
+            
+            <div class="span-3 label">
+                <label>Type:</label>
+            </div>
+            <div class="span-21 last">
+                <select name="kind">
+                    <option value="PATTERN">Pattern</option>
+                    <option value="STUNT">Stunt</option>
+                </select>
+            </div>
 
-    <br />
+            <div class="span-3 label">
+                <label>Tags:</label>
+            </div>
+            <div class="span-21 last">
+                <input name="tags" type="text" value="{{tags}}" />
+            </div>
 
-    <div>
-        <label>Tags</label> <input name="tags" type="text" value="{{tags}}" />
-    </div>
+            <div class="span-21 prepend-3 last">
+                <a href="#" onclick="$('#advanced').toggle();">Advanced</a>
+            </div>
 
-    <br />
-
-    <div>
-        <a href="#" onclick="$('#advanced').toggle();">Advanced</a>
-        <div id="advanced" style="display: none">
-            <label>Notation Type:</label>
-            <select name="notation_type">
-                <option value="JML">JML</option>
-                <option value="SITESWAP">Siteswap</option>
-            </select>
-            <br />
-            <label>Notation:</label>
-            <textarea name="notation">{{notation}}</textarea>
+            <div id="advanced" style="display: none">
+                <div class="span-3 label">
+                    <label>Notation Type:</label>
+                </div>
+                <div class="span-21 last">
+                    <select name="notation_type">
+                        <option value="JML">JML</option>
+                        <option value="SITESWAP">Siteswap</option>
+                    </select>
+                </div>
+                
+                <div class="span-3 label">
+                    <label>Notation:</label>
+                </div>
+                <div class="span-21 last">
+                    <textarea name="notation">{{notation}}</textarea>
+                </div>
+            </div>
+            
+            <div class="span-22 prepend-2 prepend-top last">
+                <input type="submit" value="{% if id %}Save{%else%}Add{%endif%} Achievement" />
+            </div>
         </div>
-    </div>
-
-    <br />
-
-    <div>
-        <input type="submit" value="{% if id %}Save{%else%}Add{%endif%} Achievement" />
-    </div>
-
-</form>
+    </form>
+</div>
 {% endblock %}
 
 {% block initjs %}

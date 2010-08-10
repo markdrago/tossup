@@ -20,6 +20,15 @@ span.listcount {
   font-size: small;
 }
 
+h2 a.action {
+  font-size: x-small;
+}
+
+div.label {
+  text-align: right;
+  margin-top: 8px;
+}
+
 /* disabled button */
 button.disabled, button.disabled:hover {
   background-color: lightgray;
@@ -89,12 +98,6 @@ div#register_box div.title {
   text-align: center;
 }
 
-div#login_box .label,
-div#register_box .label {
-  text-align: right;
-  margin-top: 8px;
-}
-
 div#login_box input.field,
 div#register_box input.field {
   width: 150px;
@@ -127,4 +130,8 @@ div#register_box #submit_button {
 /* juggler page style */
 .juggler_chart {
   background-color: white;
+}
+
+div.table {
+  padding-bottom: 20px;
 }

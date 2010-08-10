@@ -5,12 +5,14 @@
 {% block content %}
 <div class="container">
     <div class="span-24">
-        {% if request.user.is_authenticated %}
-        <br />
-        <a href="{% url juggletrack.views.achievement.add %}">Add an Achievement</a>
-        {% endif %}
-
-        {% block heading %}<h2>Achievements</h2>{% endblock %}
+        {% block heading %}
+            <h2>
+                Achievements
+                {% if request.user.is_authenticated %}
+                    <a class="action" href="{% url juggletrack.views.achievement.add %}">[Create]</a>
+                {% endif %}
+            </h2>
+        {% endblock %}
 
         <table id="achievements" class="display">
             <thead>
