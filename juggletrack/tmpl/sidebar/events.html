@@ -1,0 +1,16 @@
+<div class="module recent-activity">
+    <div class="module-head">Recent Activity</div>
+    <div class="module-body">
+        <ol class="events">
+            {% for event in events %} 
+                <li class="event">
+                    <span class="event-body">
+                        <span class="event-content">{{event.description|safe}}</span>
+                        <span class="event-meta">[{{event.created|date:"N jS"}}]</span>
+                    </span>
+                </li>
+            {% endfor %}
+        </ol>
+    </div>
+</div>
+

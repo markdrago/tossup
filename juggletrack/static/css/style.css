@@ -1,0 +1,93 @@
+/* general colors */
+body {
+  background-color: white;
+}
+
+div#top, div#sidebar {
+  background-color: #6e6f8a;
+}
+
+/* general behavior */
+ul {
+  list-style: none;
+}
+
+label {
+  margin-right: 5px;
+}
+
+/* disabled button */
+button.disabled, button.disabled:hover {
+  background-color: lightgray;
+  color: gray;
+  cursor: default;
+}
+
+/* navigation bar style */
+div#nav ul li {
+  display: inline;
+}
+
+/* sidebar style */
+div#sidebar div.module {
+  margin: 4px;
+}
+
+div#sidebar a {
+  color: black;
+}
+
+div#sidebar div.recent-activity ol {
+  list-style: decimal;
+}
+
+div#sidebar div.module-head {
+  font-size: large;
+}
+
+div#sidebar .event-meta {
+  font-size: xx-small;
+}
+
+div#sidebar ol {
+  padding-left: 25px;
+}
+
+/* login page */
+div#login_box {
+  border: thin solid black;
+  margin-top: 75px;
+}
+
+div#login_box div.title {
+  text-align: center;
+}
+
+div#login_box .label {
+  text-align: right;
+  margin-top: 8px;
+}
+
+div#login_box input.field {
+  width: 150px;
+}
+
+div#login_box #submit_button {
+  margin-left: 23px;
+}
+
+/* achievement page */
+.title {
+  margin-bottom: 0px;
+}
+
+.achievement_chart {
+  background-color: white;
+}
+
+.achievement_animation .applet {
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: white;
+}
