@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container">
     <div class="span-16">
-        <div class="span-10">
+        <div class="span-16 last">
             <h2 class="title">{{achievement.name}}
             {% if request.user.is_authenticated %}
                 <a class="action" href="{% url juggletrack.views.achievement.add achievement.id %}">[Edit]</a>

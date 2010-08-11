@@ -1,0 +1,42 @@
+{% extends "parent.html" %}
+
+{% block title %} - All Jugglers{% endblock %}
+
+{% block initjs %}
+<script type="text/javascript">
+  //draw chart
+  var options = {
+    lines: { show: true },
+    points: { show: true },
+    xaxis: { mode: 'time'},
+  };
+  var data = [];
+  var chartdiv = $("#overall_score_vs_time_chart");
+    
+  var onDataReceived = function(series) {
+      data.push(series);
+      $.plot(chartdiv, data, options);
+  };
+        
+  $.ajax({
+    url: 'jugglers/overall_score_chart_data',
+    method: 'GET',
+    dataType: 'json',
+    success: onDataReceived
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="span-24">
+        <h2>Other Statistics</h2>
+        
+        <div style="text-align: center; width: 100%;">
+            <h3>Overall Score Total vs. Time</h3>
+            <div id="overall_score_vs_time_chart" style="width:800px;height:200px;margin-left: auto;margin-right: auto;"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

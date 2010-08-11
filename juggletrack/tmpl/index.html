@@ -40,43 +40,14 @@ $().ready(function() {
   
   $('#sidebar .events').load('{% url juggletrack.views.sidebar.events %}');
   $('#sidebar .tags').load('{% url juggletrack.views.sidebar.achievement_tags %}');
-
-  //draw chart
-  /*
-  var options = {
-    lines: { show: true },
-    points: { show: true },
-    xaxis: { mode: 'time'},
-  };
-  var data = [];
-  var chartdiv = $("#overall_score_vs_time_chart");
-    
-  var onDataReceived = function(series) {
-      data.push(series);
-      $.plot(chartdiv, data, options);
-  };
-        
-  $.ajax({
-    url: 'jugglers/overall_score_chart_data',
-    method: 'GET',
-    dataType: 'json',
-    success: onDataReceived
-  });
-  */
 });
 </script>
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <div id="left" class="span-18">
+    <div class="span-18">
         <h2>Jugglers</h2>
-
-<!-- Move to some other overall stats page -->
-<!--
-<h4>Overall Score Total vs. Time</h4>
-<div id="overall_score_vs_time_chart" style="width:800px;height:200px;"></div>
--->
 
         <form action="juggler_diff" method="get">
             <table id="jugglers" class="display">
@@ -105,6 +76,14 @@ $().ready(function() {
     <div id="sidebar" class="span-6 last">
         <div class="events"></div>
         <div class="tags"></div>
+        <div class="sidebar links">
+            <div class="module-head">Links</dev>
+            <div class="module-body">
+                <ul>
+                    <li><a href="other_stats">Other Stats</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

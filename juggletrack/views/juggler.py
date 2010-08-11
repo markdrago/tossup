@@ -179,3 +179,6 @@ def overall_score_chart_data(request):
     
     return HttpResponse(json.dumps(data))
 
+def other_stats(request):
+    return render_to_response('other_stats.html', {'request': request})
+

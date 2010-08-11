@@ -10,6 +10,8 @@ div#top, div#sidebar {
 /* general behavior */
 ul {
   list-style: none;
+  padding-left: 5px;
+  margin-bottom: 5px;
 }
 
 label {
@@ -37,11 +39,6 @@ button.disabled, button.disabled:hover {
 }
 
 /* navigation bar style */
-div#nav ul {
-  padding-left: 5px;
-  margin-bottom: 5px;
-}
-
 div#nav ul li {
   display: inline;
 }
@@ -75,6 +72,10 @@ div#sidebar div.recent-activity ol {
 
 div#sidebar div.module-head {
   font-size: large;
+}
+
+div#sidebar div.module-body {
+  font-size: small;
 }
 
 div#sidebar .event-meta {
