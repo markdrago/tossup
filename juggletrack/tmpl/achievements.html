@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container">
-    <div class="span-24">
+    <div class="span-18">
         {% block heading %}
             <h2>
                 Achievements
@@ -35,13 +35,19 @@
             </tbody>
         </table>
     </div>
+    
+    <div id="sidebar" class="span-6 last">
+        <div class="tags"></div>
+    </div>
 </div>
 {% endblock %}
 
 {% block initjs %}
 <script type="text/javascript">
   $(document).ready(function() {
-     var renderNAs = function(obj) {
+    $('#sidebar .tags').load('{% url juggletrack.views.sidebar.achievement_tags %}');
+  
+    var renderNAs = function(obj) {
        if (obj.aData[1] == "101.00")
          return "N/A";
      return obj.aData[1];
