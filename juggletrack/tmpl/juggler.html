@@ -36,8 +36,8 @@
                                 <td><a href="../../achievement/{{ach.achievement.id}}">{{ach.achievement.name}}</a></td>
                                 <td class="value">{{ach.achievement.value|floatformat:2}}</td>
                                 <td>{{ach.achievement.get_kind_display|title}}</td>
-                                <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
-                                <td>{{ach.challengeable_since|date:"M d, Y @ H:i"}}</td>
+                                <td>{{ach.date_created|date:"N jS"}}</td>
+                                <td>{{ach.challengeable_since|date:"N jS"}}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -69,7 +69,7 @@
                             <td><a href="../../achievement/{{ach.achievement.id}}">{{ach.achievement.name}}</a></td>
                             <td class="value">{{ach.achievement.value|floatformat:2}}</td>
                             <td>{{ach.achievement.get_kind_display|title}}</td>
-                            <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
+                            <td>{{ach.date_created|date:"N jS"}}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
