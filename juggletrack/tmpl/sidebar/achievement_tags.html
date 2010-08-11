@@ -1,0 +1,14 @@
+{% load tagging_tags %}
+
+<div class="module tags">
+    <div class="module-head">Achievement Tags</div>
+    <div class="module-body">
+        {% tag_cloud_for_model juggletrack.Achievement as tag_cloud %}
+        {% for tag in tag_cloud %}
+            <span class="tag" style="font-size:{{tag.font_size}}em;">
+                <a href="{% url juggletrack.views.achievement.collection_with_tag tag.name %}">{{tag.name}}</a>
+            </span>
+        {% endfor %}
+    </div>
+</div>
+

@@ -38,7 +38,8 @@ $().ready(function() {
   
   $('.juggle_check').click(force_two_checked);
   
-  $('#sidebar').load('/juggletrack/dashboard');
+  $('#sidebar .events').load('{% url juggletrack.views.sidebar.events %}');
+  $('#sidebar .tags').load('{% url juggletrack.views.sidebar.achievement_tags %}');
 
   //draw chart
   /*
@@ -102,7 +103,8 @@ $().ready(function() {
         </form>
     </div>
     <div id="sidebar" class="span-6 last">
-    Sidebar goes here
+        <div class="events"></div>
+        <div class="tags"></div>
     </div>
 </div>
 {% endblock %}

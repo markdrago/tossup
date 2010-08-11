@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, Http404, HttpResponse, HttpRespons
 
 from juggletrack.models import Juggler, Achievement, JugglerAchievement
 
-def dashboard(request):
+def events(request):
     def eventify(event):
         return { 'created': event.date_created, 'description': event.eventify() }
     def eventify_c(event, created):
@@ -24,4 +24,7 @@ def dashboard(request):
     recent_events.reverse()
     recent_events = recent_events[0:10]
     return render_to_response('sidebar/events.html', {'events': recent_events})
+
+def achievement_tags(request):
+    return render_to_response('sidebar/achievement_tags.html')
 
