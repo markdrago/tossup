@@ -11,7 +11,7 @@ from juggletrack.utils import changelog
 
 def collection(request):
     jugglers = list(Juggler.objects.all())
-    return render_to_response('index.html', {'jugglers': jugglers, 'request':request})
+    return render_to_response('jugglers.html', {'jugglers': jugglers, 'request':request})
     
 def detail(request, juggler_id):
     juggler = get_object_or_404(Juggler, pk=juggler_id)
