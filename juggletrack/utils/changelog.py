@@ -44,16 +44,27 @@ def log_juggler_scores(event, log_all):
 
 def eventlog_data(dataset):
     data = []
+    endingscores = []
+    days = []
     prevlogday = None
     for log in dataset:
         day = log.date_created.date()
         if(day == prevlogday):
             prevlogday = day
             data[-1][1] += '<br />' + str(log.event)
+            endingscores[-1] = log.datapoint()
             continue
         prevlogday = day
         logtime = timegm(log.date_created.timetuple()) * 1000
+        days.append(day)
+        endingscores.append(log.datapoint())
         data.append([logtime, str(log.event)])
+
+    #prepend every data item with the ending score for that day
+    for i in range(len(data)):
+        score = '%.2f' % (endingscores[i],)
+        day = days[i].strftime('%B %d')
+        data[i][1] =  day + ' -- ' + score + '<br />' + data[i][1]
     return data
 
 def changelog_data(dataset):
@@ -62,7 +73,7 @@ def changelog_data(dataset):
     for log in dataset:
         day = log.date_created.date()
         if (day == prevlogday):
-            data[len(data)-1][1] = log.datapoint()
+            data[-1][1] = log.datapoint()
             continue
         prevlogday = day
         logtime = timegm(log.date_created.timetuple()) * 1000

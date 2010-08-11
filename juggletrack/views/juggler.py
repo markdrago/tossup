@@ -122,10 +122,8 @@ def do_juggler_diff(juggler1, juggler2):
     return (only1, only2)
 
 def diff_chart_data(request):
-    if not request.is_ajax():
-        return Http404
     if request.method != 'GET':
-        return Http404
+        raise Http404
 
     juggler_ids = request.GET.getlist('juggler')
     juggler1 = get_object_or_404(Juggler, pk=juggler_ids[0])
@@ -141,10 +139,8 @@ def diff_chart_data(request):
     return HttpResponse(json.dumps({'info': [event1, event2], 'data': [data1, data2]}))
 
 def score_chart_data(request, juggler_id):
-    if not request.is_ajax():
-        return Http404
     if request.method != 'GET':
-        return Http404
+        raise Http404
 
     juggler = get_object_or_404(Juggler, pk=juggler_id)
     
@@ -155,10 +151,8 @@ def score_chart_data(request, juggler_id):
     return HttpResponse(json.dumps({'info': events, 'data': logs}))
 
 def overall_score_chart_data(request):
-    if not request.is_ajax():
-        return Http404
     if request.method != 'GET':
-        return Http404
+        raise Http404
 
     #only include the last score log per day
     data = []

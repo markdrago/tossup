@@ -77,7 +77,7 @@ def add(request, achievement_id=None):
 
 def value_chart_data(request, achievement_id):
     if request.method != 'GET':
-        return Http404
+        raise Http404
 
     ach = get_object_or_404(Achievement, pk=achievement_id)
     
