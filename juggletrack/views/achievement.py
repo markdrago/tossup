@@ -3,11 +3,15 @@ from django.http import HttpResponseRedirect, Http404, HttpResponse, HttpRespons
 from django.core.urlresolvers import reverse
 from tagging.models import Tag, TaggedItem
 
-import json
 from datetime import datetime
 
 from juggletrack.models import Achievement, JugglerAchievement, AchievementValueLog
 from juggletrack.utils import changelog
+
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 def detail(request, achievement_id):
     ach = get_object_or_404(Achievement, pk=achievement_id)

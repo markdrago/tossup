@@ -2,12 +2,16 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect, Http404, HttpResponse, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 
-import json
 from calendar import timegm
 from datetime import datetime
 
 from juggletrack.models import Juggler, Achievement, JugglerAchievement, JugglerScoreLog
 from juggletrack.utils import changelog
+
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 def collection(request):
     jugglers = list(Juggler.objects.all())
