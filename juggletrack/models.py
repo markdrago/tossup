@@ -28,8 +28,12 @@ class Achievement(models.Model):
         if achieved == 0: return 101
         return max(1, 100 - ((float(achieved - 1) / total) * 100))
 
-    def eventify(self):
-        return 'There\'s a new achievement to be had: <a href="%s">%s</a>' % (self.view(), self.name)
+    def eventify(self, withlink=True):
+        prefix = 'There\'s a new achievement to be had: '
+        if withlink:
+            return '%s <a href="%s">%s</a>' % (prefix, self.view(), self.name)
+        else:
+            return '%s %s' % (prefix, self.name)
 
     def view(self):
         return reverse('juggletrack.views.achievement.detail', args=(self.id,))
@@ -66,8 +70,12 @@ class Juggler(models.Model):
     def __unicode__(self):
         return self.get_name()
 
-    def eventify(self):
-        return 'A new juggler joins our ranks: <a href="%s">%s</a>' % (self.view(), self.get_name())
+    def eventify(self, withlink=True):
+        prefix = 'A new juggler joins our ranks: '
+        if withlink:
+            return '%s <a href="%s">%s</a>' % (prefix, self.view(), self.get_name())
+        else:
+            return '%s %s' % (prefix, self.get_name())
 
     def view(self):
         return reverse('juggletrack.views.juggler.detail', args=(self.id,))
@@ -100,12 +108,19 @@ class JugglerAchievement(models.Model):
     def __unicode__(self):
         return self.juggler.get_name() + ": " + self.achievement.name
 
-    def eventify(self):
+    def eventify(self, withlink=True):
         text = 'has achieved'
         if not self.challengeable_since == None:
             text = 'is accepting challenges for'
-        return '<a href="%s">%s</a> %s <a href="%s">%s</a>' % \
-                (self.juggler.view(), self.juggler.get_name(), text, self.achievement.view(), self.achievement.name)
+        if withlink:
+            return '<a href="%s">%s</a> %s <a href="%s">%s</a>' % \
+                    (self.juggler.view(), self.juggler.get_name(), text, self.achievement.view(), self.achievement.name)
+        else:
+            return '%s %s %s' % \
+                    (self.juggler.get_name(), text, self.achievement.name)
+    
+    def view(self):
+        return self.juggler.view()
 
 class AchievementEvent(models.Model):
     KIND_CHOICES = (
@@ -145,3 +160,4 @@ class JugglerScoreLog(models.Model):
 
     def datapoint(self):
         return self.score
+

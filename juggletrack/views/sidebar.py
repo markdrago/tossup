@@ -1,28 +1,9 @@
-from django.shortcuts import get_object_or_404, render_to_response
-from django.http import HttpResponseRedirect, Http404, HttpResponse, HttpResponseForbidden
+from django.shortcuts import render_to_response
 
-from juggletrack.models import Juggler, Achievement, JugglerAchievement
+from juggletrack.utils.events import get_recent_events
 
 def events(request):
-    def eventify(event):
-        return { 'created': event.date_created, 'description': event.eventify() }
-    def eventify_c(event, created):
-        return { 'created': created, 'description': e.eventify() }
-
-    recent_juggler_achievements = list(JugglerAchievement.objects.filter(challengeable_since__isnull=True).order_by('-date_created')[:5])
-    recent_added_achievements = list(Achievement.objects.order_by('-date_created')[:5])
-    recent_jugglers = list(Juggler.objects.order_by('-date_created')[:5])
-
-    recent_challengeable_achievements = list(JugglerAchievement.objects.filter(challengeable_since__isnull=False).order_by('-challengeable_since')[:5])
-
-    recent_events = sorted(
-            [eventify(e) \
-                for e in recent_juggler_achievements + recent_added_achievements + recent_jugglers] \
-            + [eventify_c(e, e.challengeable_since) for e in recent_challengeable_achievements], \
-        key=lambda e: e['created'])
-
-    recent_events.reverse()
-    recent_events = recent_events[0:10]
+    recent_events = get_recent_events()[0:10]
     return render_to_response('sidebar/events.html', {'events': recent_events})
 
 def achievement_tags(request):

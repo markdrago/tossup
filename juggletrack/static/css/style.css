@@ -84,6 +84,13 @@ div#sidebar .event-meta {
 
 div#sidebar ol {
   padding-left: 25px;
+  margin-bottom: 10px;
+}
+
+div#sidebar div.feed_links {
+  margin-top: 0px;
+  width: 100%;
+  text-align: center;
 }
 
 /* login and register pages */
