@@ -9,13 +9,13 @@ class ActivityFeedRss(Feed):
     description = "Updates on available achievements, juggler achievements, etc."
 
     def link(self):
-        return reverse('juggletrack.views.juggler.collection')
+        return 'http://juggling.statshappen.com' + reverse('juggletrack.views.juggler.collection')
 
     def items(self):
         return get_recent_events()
 
     def item_link(self, item):
-        return item['view']
+        return 'http://juggling.statshappen.com' + item['view']
     
     def item_pubdate(self, item):
         return item['created']
