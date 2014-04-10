@@ -1,5 +1,6 @@
-from django.conf.urls.defaults import *
-from django.core.urlresolvers import reverse
+from django.conf.urls import patterns, url, include
+from django.views.generic.base import RedirectView
+from django.core.urlresolvers import reverse_lazy
 import os
 
 from juggletrack.feeds import ActivityFeedRss, ActivityFeedAtom
@@ -29,16 +30,16 @@ urlpatterns = patterns('juggletrack.views',
 )
 
 urlpatterns += patterns('django.views.generic.simple',
-    ('^$', 'redirect_to', {'url': reverse('juggletrack.views.juggler.collection')}),
+    ('^$', RedirectView.as_view(url=reverse_lazy('juggletrack.views.juggler.collection'))),
 )
 
 rss_feeds = {'activity': ActivityFeedRss}
 atom_feeds = {'activity': ActivityFeedAtom}
-urlpatterns += patterns('django.contrib.syndication.views',
-    (r'^feeds/rss/(?P<url>.*)$', 'feed', {'feed_dict': rss_feeds}),
-    (r'^feeds/atom/(?P<url>.*)$', 'feed', {'feed_dict': atom_feeds}),
-    (r'^feeds/(?P<url>.*)$', 'feed', {'feed_dict': atom_feeds}),
-)
+#urlpatterns += patterns('django.contrib.syndication.views',
+#    (r'^feeds/rss/(?P<url>.*)$', 'feed', {'feed_dict': rss_feeds}),
+#    (r'^feeds/atom/(?P<url>.*)$', 'feed', {'feed_dict': atom_feeds}),
+#    (r'^feeds/(?P<url>.*)$', 'feed', {'feed_dict': atom_feeds}),
+#)
 
 urlpatterns += patterns('',
     (r'^site_media/(?P<path>.*)$',

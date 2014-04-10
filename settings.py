@@ -11,6 +11,12 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(os.path.abspath(os.path.curdir), 'tossup.db')
+            }
+        }
 DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 DATABASE_NAME = os.path.join(os.path.abspath(os.path.curdir), 'tossup.db')  # Or path to database file if using sqlite3.
 DATABASE_USER = ''             # Not used with sqlite3.
@@ -54,8 +60,10 @@ SECRET_KEY = 'tanj^4_*a@2hk_xmrbr56=2m)w+@+grz!xfm7f3rs3$bnk04z4'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
+'django.template.loaders.filesystem.Loader',
+#'django.template.loaders.filesystem.load_template_source',
+'django.template.loaders.app_directories.Loader',
+#    'django.template.loaders.app_directories.load_template_source',
 #     'django.template.loaders.eggs.load_template_source',
 )
 
@@ -65,7 +73,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
-ROOT_URLCONF = 'tossup.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -81,7 +89,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'tossup.juggletrack',
+    'juggletrack',
     'django.contrib.admin'
 )
 

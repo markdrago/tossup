@@ -38,8 +38,8 @@ $().ready(function() {
   
   $('.juggle_check').click(force_two_checked);
   
-  $('#sidebar .events').load('{% url juggletrack.views.sidebar.events %}');
-  $('#sidebar .tags').load('{% url juggletrack.views.sidebar.achievement_tags %}');
+  $('#sidebar .events').load('{% url "juggletrack.views.sidebar.events" %}');
+  $('#sidebar .tags').load('{% url "juggletrack.views.sidebar.achievement_tags" %}');
 });
 </script>
 {% endblock %}

@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import HttpResponseRedirect, Http404, HttpResponse
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
@@ -75,5 +75,5 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse('juggletrack.views.juggler.collection'))
+    return HttpResponseRedirect(reverse_lazy('juggletrack.views.juggler.collection'))
 

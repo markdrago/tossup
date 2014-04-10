@@ -24,13 +24,13 @@
 </head>
 <body>
 
-{% url juggletrack.views.dashboard.dashboard as dashboard_url %}
-{% url juggletrack.views.achievement.collection as achievements_url %}
-{% url juggletrack.views.juggler.collection as jugglers_url %}
-{% url juggletrack.views.auth.login_view as login_url %}
-{% url juggletrack.views.auth.logout_view as logout_url %}
-{% url juggletrack.views.auth.register as register_url %}
-{% url juggletrack.views.juggler.detail juggler_id=request.user.get_profile.id as juggler_url %}
+{% url "juggletrack.views.dashboard.dashboard" as dashboard_url %}
+{% url "juggletrack.views.achievement.collection" as achievements_url %}
+{% url "juggletrack.views.juggler.collection" as jugglers_url %}
+{% url "juggletrack.views.auth.login_view" as login_url %}
+{% url "juggletrack.views.auth.logout_view" as logout_url %}
+{% url "juggletrack.views.auth.register" as register_url %}
+{% url "juggletrack.views.juggler.detail" juggler_id=request.user.get_profile.id as juggler_url %}
 
 <div id="top" class="container">
 <div class="span-18">

@@ -9,7 +9,7 @@
             <h2>
                 Achievements
                 {% if request.user.is_authenticated %}
-                    <a class="action" href="{% url juggletrack.views.achievement.add %}">[Create]</a>
+                    <a class="action" href="{% url "juggletrack.views.achievement.add" %}">[Create]</a>
                 {% endif %}
             </h2>
         {% endblock %}
@@ -26,7 +26,7 @@
             <tbody>
                 {% for ach in achievements %}
                     <tr>
-                        <td><a href="{% url juggletrack.views.achievement.detail ach.id %}">{{ach.name}}</a></td>
+                        <td><a href="{% url "juggletrack.views.achievement.detail" ach.id %}">{{ach.name}}</a></td>
                         <td class="value">{{ach.value|floatformat:2}}</td>
                         <td>{{ach.get_kind_display|title}}</td>
                         <td>{{ach.date_created|date:"M d, Y @ H:i"}}</td>
@@ -45,7 +45,7 @@
 {% block initjs %}
 <script type="text/javascript">
   $(document).ready(function() {
-    $('#sidebar .tags').load('{% url juggletrack.views.sidebar.achievement_tags %}');
+    $('#sidebar .tags').load('{% url "juggletrack.views.sidebar.achievement_tags" %}');
   
     var renderNAs = function(obj) {
        if (obj.aData[1] == "101.00")
